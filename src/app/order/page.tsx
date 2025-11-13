@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
+import UserDropdown from '@/components/UserDropdown';
 import styles from './order.module.css';
 
 interface SizeQuantity {
@@ -61,8 +62,13 @@ export default function OrderPage() {
       {/* Header */}
       <header className={styles.header}>
         <div className={styles.container}>
-          <Link href="/" className={styles.backLink}>← กลับหน้าแรก</Link>
-          <h1>สั่งซื้อเสื้อเฉลิมฉลองเนื่อง 243 ปี</h1>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '1rem' }}>
+            <div>
+              <Link href="/products" className={styles.backLink}>← กลับหน้าแรก</Link>
+              <h1>สั่งซื้อเสื้อเฉลิมฉลองเนื่อง 243 ปี</h1>
+            </div>
+            <UserDropdown />
+          </div>
         </div>
       </header>
 

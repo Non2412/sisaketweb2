@@ -16,12 +16,12 @@ export default function LoginPage() {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     // TODO: Call login API
-    router.push('/dashboard');
+    router.push('/products');
   };
 
   const handleGoogleLogin = () => {
     // TODO: Implement Google OAuth
-    alert('Google Login - Coming soon!');
+    router.push('/products');
   };
 
   return (

@@ -3,6 +3,7 @@
 import React from 'react';
 import DashboardStats from '@/components/dashboard/DashboardStats';
 import OrderList from '@/components/dashboard/OrderList';
+import UserDropdown from '@/components/UserDropdown';
 
 export default function DashboardPage() {
   return (
@@ -45,27 +46,8 @@ export default function DashboardPage() {
               </p>
             </div>
             
-            {/* User Info */}
-            <div style={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: '0.75rem'
-            }}>
-              <div style={{
-                width: '40px',
-                height: '40px',
-                background: '#e0e7ff',
-                borderRadius: '50%',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                fontSize: '1.25rem'
-              }}>👤</div>
-              <span style={{
-                color: '#374151',
-                fontWeight: '500'
-              }}>Supachai Wicheer</span>
-            </div>
+            {/* User Dropdown */}
+            <UserDropdown />
           </div>
         </div>
 
