@@ -36,7 +36,7 @@ export default function DashboardPage() {
                 marginBottom: '0.5rem'
               }}>
                 <span style={{ fontSize: '2.25rem' }}>⏱</span>
-                <span>ประวัติการสั่งซื้อเสื้อ</span>
+                <span>ประวัติ</span>
               </h1>
               <p style={{
                 color: '#6b7280',
