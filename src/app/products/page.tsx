@@ -64,19 +64,8 @@ export default function ProductsPage() {
             </h2>
           </div>
           
-          <div style={{ display: 'flex', alignItems: 'center', gap: '2rem' }}>
-            <nav style={{ display: 'flex', gap: '2rem', flexWrap: 'wrap' }}>
-              <a href="#about" className="hover-link" style={{ textDecoration: 'none', color: '#212529', fontSize: '0.875rem', fontWeight: '500', transition: 'color 0.3s' }}>
-                เกี่ยวกับโครงการ
-              </a>
-              <a href="#contact" className="hover-link" style={{ textDecoration: 'none', color: '#212529', fontSize: '0.875rem', fontWeight: '500', transition: 'color 0.3s' }}>
-                ติดต่อเรา
-              </a>
-            </nav>
-
-            {/* User Dropdown */}
-            <UserDropdown />
-          </div>
+          {/* User Dropdown */}
+          <UserDropdown />
         </header>
 
         {/* Main Content */}

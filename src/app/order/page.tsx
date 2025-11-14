@@ -15,6 +15,7 @@ export default function OrderPage() {
   const [step, setStep] = useState(1);
   const [selectedShirtType, setSelectedShirtType] = useState<'แบบดี' | 'แบบโปโล' | null>(null);
   const [sizes, setSizes] = useState<SizeQuantity[]>([]);
+  const [showConfirmModal, setShowConfirmModal] = useState(false);
 
   // Form data
   const [formData, setFormData] = useState({
@@ -53,8 +54,8 @@ export default function OrderPage() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // TODO: Submit order
-    alert('ยืนยันการสั่งซื้อสำเร็จ!');
+    // Show confirmation modal
+    setShowConfirmModal(true);
   };
 
   return (
@@ -288,6 +289,192 @@ export default function OrderPage() {
           </div>
         )}
       </div>
+
+      {/* Confirmation Modal */}
+      {showConfirmModal && (
+        <div style={{
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          backgroundColor: 'rgba(0, 0, 0, 0.5)',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          zIndex: 9999,
+          padding: '1rem'
+        }}>
+          <div style={{
+            backgroundColor: 'white',
+            borderRadius: '1rem',
+            padding: '2rem',
+            maxWidth: '500px',
+            width: '100%',
+            boxShadow: '0 20px 60px rgba(0,0,0,0.3)'
+          }}>
+            {/* Header with Icon */}
+            <div style={{
+              textAlign: 'center',
+              marginBottom: '1.5rem'
+            }}>
+              <div style={{
+                width: '80px',
+                height: '80px',
+                borderRadius: '50%',
+                backgroundColor: '#E0F2FE',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                margin: '0 auto 1rem',
+                fontSize: '2.5rem'
+              }}>
+                ❓
+              </div>
+              <h2 style={{
+                fontSize: '1.5rem',
+                fontWeight: 'bold',
+                color: '#1F2937',
+                margin: 0
+              }}>
+                ยืนยันการสั่งซื้อ
+              </h2>
+            </div>
+
+            {/* Order Details */}
+            <div style={{
+              backgroundColor: '#F9FAFB',
+              padding: '1.5rem',
+              borderRadius: '0.75rem',
+              marginBottom: '1.5rem'
+            }}>
+              <div style={{ marginBottom: '1rem' }}>
+                <p style={{ fontSize: '0.875rem', color: '#6B7280', margin: '0 0 0.25rem 0' }}>ชื่อ-นามสกุล:</p>
+                <p style={{ fontSize: '1rem', fontWeight: '600', color: '#1F2937', margin: 0 }}>
+                  {formData.firstName} {formData.lastName}
+                </p>
+              </div>
+
+              <div style={{ marginBottom: '1rem' }}>
+                <p style={{ fontSize: '0.875rem', color: '#6B7280', margin: '0 0 0.25rem 0' }}>โทรศัพท์:</p>
+                <p style={{ fontSize: '1rem', fontWeight: '600', color: '#1F2937', margin: 0 }}>
+                  {formData.phone}
+                </p>
+              </div>
+
+              <div style={{ marginBottom: '1rem' }}>
+                <p style={{ fontSize: '0.875rem', color: '#6B7280', margin: '0 0 0.25rem 0' }}>อีเมล:</p>
+                <p style={{ fontSize: '1rem', fontWeight: '600', color: '#1F2937', margin: 0 }}>
+                  {formData.email}
+                </p>
+              </div>
+
+              <div style={{ marginBottom: '1rem' }}>
+                <p style={{ fontSize: '0.875rem', color: '#6B7280', margin: '0 0 0.25rem 0' }}>ที่อยู่:</p>
+                <p style={{ fontSize: '1rem', fontWeight: '600', color: '#1F2937', margin: 0 }}>
+                  {formData.address}
+                </p>
+              </div>
+
+              <div style={{ marginBottom: '1rem' }}>
+                <p style={{ fontSize: '0.875rem', color: '#6B7280', margin: '0 0 0.25rem 0' }}>รูปแบบเสื้อ:</p>
+                <p style={{ fontSize: '1rem', fontWeight: '600', color: '#1F2937', margin: 0 }}>
+                  {selectedShirtType}
+                </p>
+              </div>
+
+              <div>
+                <p style={{ fontSize: '0.875rem', color: '#6B7280', margin: '0 0 0.5rem 0' }}>รายการสั่งซื้อ:</p>
+                {sizes.map((item, index) => (
+                  <p key={index} style={{ fontSize: '1rem', fontWeight: '600', color: '#1F2937', margin: '0.25rem 0' }}>
+                    {item.size}: {item.quantity} ตัว
+                  </p>
+                ))}
+              </div>
+            </div>
+
+            {/* Summary */}
+            <div style={{
+              borderTop: '2px solid #E5E7EB',
+              paddingTop: '1rem',
+              marginBottom: '1.5rem'
+            }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
+                <span style={{ color: '#6B7280' }}>จำนวนรวม:</span>
+                <span style={{ fontWeight: '600' }}>{totalQuantity} ตัว</span>
+              </div>
+              <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
+                <span style={{ color: '#6B7280' }}>ราคาเสื้อ:</span>
+                <span style={{ fontWeight: '600' }}>฿{totalPrice}</span>
+              </div>
+              <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
+                <span style={{ color: '#6B7280' }}>ราคาจัดส่งสินค้า:</span>
+                <span style={{ fontWeight: '600', color: '#3B82F6' }}>฿{shippingCost}</span>
+              </div>
+              <div style={{
+                display: 'flex',
+                justifyContent: 'space-between',
+                paddingTop: '0.5rem',
+                borderTop: '1px solid #E5E7EB',
+                marginTop: '0.5rem'
+              }}>
+                <span style={{ fontSize: '1.125rem', fontWeight: 'bold' }}>ราคารวมทั้งสิ้น:</span>
+                <span style={{ fontSize: '1.125rem', fontWeight: 'bold', color: '#3B82F6' }}>฿{grandTotal}</span>
+              </div>
+            </div>
+
+            {/* Action Buttons */}
+            <div style={{
+              display: 'flex',
+              gap: '1rem',
+              justifyContent: 'center'
+            }}>
+              <button
+                onClick={() => setShowConfirmModal(false)}
+                style={{
+                  flex: 1,
+                  padding: '0.75rem 1.5rem',
+                  backgroundColor: '#E5E7EB',
+                  color: '#374151',
+                  border: 'none',
+                  borderRadius: '0.5rem',
+                  fontSize: '1rem',
+                  fontWeight: '600',
+                  cursor: 'pointer',
+                  transition: 'all 0.3s'
+                }}
+                onMouseOver={(e) => e.currentTarget.style.backgroundColor = '#D1D5DB'}
+                onMouseOut={(e) => e.currentTarget.style.backgroundColor = '#E5E7EB'}
+              >
+                ยกเลิก
+              </button>
+              <button
+                onClick={() => {
+                  // TODO: Process payment
+                  alert('ดำเนินการสั่งซื้อสำเร็จ!');
+                  setShowConfirmModal(false);
+                }}
+                style={{
+                  flex: 1,
+                  padding: '0.75rem 1.5rem',
+                  backgroundColor: '#10B981',
+                  color: 'white',
+                  border: 'none',
+                  borderRadius: '0.5rem',
+                  fontSize: '1rem',
+                  fontWeight: '600',
+                  cursor: 'pointer',
+                  transition: 'all 0.3s'
+                }}
+                onMouseOver={(e) => e.currentTarget.style.backgroundColor = '#059669'}
+                onMouseOut={(e) => e.currentTarget.style.backgroundColor = '#10B981'}
+              >
+                ยืนยันสั่งซื้อ
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
