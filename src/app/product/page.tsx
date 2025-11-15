@@ -1,5 +1,6 @@
 'use client';
 
+import Link from 'next/link';
 import styles from './product.module.css';
 
 export default function ProductPage() {
@@ -11,9 +12,10 @@ export default function ProductPage() {
           <div className={styles.navContent}>
             <div className={styles.logo}>เสื้อเฉลิมฉลอง</div>
             <nav className={styles.navLinks}>
-              <a href="#home">หน้าหลัก</a>
+              <Link href="/">หน้าหลัก</Link>
               <a href="#about">เกี่ยวกับโครงการ</a>
               <a href="#contact">ติดต่อเรา</a>
+              <Link href="/order-history">ประวัติการสั่งซื้อ</Link>
             </nav>
           </div>
         </div>
@@ -95,4 +97,3 @@ export default function ProductPage() {
     </div>
   );
 }
-
