@@ -63,7 +63,7 @@ export default function OrderPage() {
       {/* Header */}
       <header className={styles.header}>
         <div className={styles.container}>
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '1rem' }}>
+          <div className={styles.headerContent}>
             <div>
               <Link href="/products" className={styles.backLink}>← กลับหน้าแรก</Link>
               <h1>สั่งซื้อเสื้อเฉลิมฉลองเนื่อง 243 ปี</h1>
@@ -74,59 +74,52 @@ export default function OrderPage() {
       </header>
 
       <div className={styles.container}>
-        {/* Progress Steps */}
-        <div className={styles.progressSteps}>
-          <div className={`${styles.step} ${step >= 1 ? styles.active : ''}`}>
-            <div className={styles.stepNumber}>1</div>
-            <div className={styles.stepLabel}>เลือกสินค้อ</div>
-          </div>
-          <div className={`${styles.step} ${step >= 2 ? styles.active : ''}`}>
-            <div className={styles.stepNumber}>2</div>
-            <div className={styles.stepLabel}>กรอกข้อมูลและจำนวน</div>
-          </div>
-        </div>
-
         {/* Step 1: Select Shirt Type */}
         {step === 1 && (
           <div className={styles.stepContent}>
-            <h2>เลือกแบบเสื้อ</h2>
-            <div className={styles.shirtSelection}>
-              <div 
-                className={`${styles.shirtOption} ${selectedShirtType === 'แบบดี' ? styles.selected : ''}`}
-                onClick={() => setSelectedShirtType('แบบดี')}
-              >
-                <div className={styles.shirtImagePlaceholder}>
-                  เสื้อแบบดี<br/>(รอภาพ)
-                </div>
-                <h3>แบบดี</h3>
-                <p className={styles.price}>198 บาท</p>
-              </div>
+            {/* Product Image - Large Display */}
+            <div className={styles.productImageDisplay}>
+              <Image 
+                src="/images/shirt_243_black.jpg"
+                alt="เสื้อเฉลิมฉลอง 243 ปี"
+                width={400}
+                height={400}
+                style={{ objectFit: 'contain' }}
+                priority
+              />
+            </div>
 
-              <div 
-                className={`${styles.shirtOption} ${selectedShirtType === 'แบบโปโล' ? styles.selected : ''}`}
-                onClick={() => setSelectedShirtType('แบบโปโล')}
-              >
-                <div className={styles.shirtImageWrapper}>
-                  <Image 
-                    src="/images/shirt_243_black.jpg"
-                    alt="แบบโปโล"
-                    width={250}
-                    height={250}
-                    style={{ objectFit: 'contain' }}
-                  />
+            {/* Shirt Type Selection */}
+            <div className={styles.formSection}>
+              <h3>เลือกแบบเสื้อ</h3>
+              <div className={styles.shirtTypeSelection}>
+                <div 
+                  className={`${styles.typeOption} ${selectedShirtType === 'แบบดี' ? styles.selected : ''}`}
+                  onClick={() => setSelectedShirtType('แบบดี')}
+                >
+                  <div className={styles.typeLabel}>แบบดี</div>
+                  <div className={styles.typePrice}>198 บาท</div>
                 </div>
-                <h3>แบบโปโล</h3>
-                <p className={styles.price}>198 บาท</p>
+                <div 
+                  className={`${styles.typeOption} ${selectedShirtType === 'แบบโปโล' ? styles.selected : ''}`}
+                  onClick={() => setSelectedShirtType('แบบโปโล')}
+                >
+                  <div className={styles.typeLabel}>แบบโปโล</div>
+                  <div className={styles.typePrice}>198 บาท</div>
+                </div>
               </div>
             </div>
 
-            <button 
-              className={styles.btnNext}
-              disabled={!selectedShirtType}
-              onClick={() => setStep(2)}
-            >
-              ถัดไป →
-            </button>
+            <div className={styles.btnContainer}>
+              <button 
+                type="button"
+                className={styles.btnNext}
+                disabled={!selectedShirtType}
+                onClick={() => setStep(2)}
+              >
+                ถัดไป →
+              </button>
+            </div>
           </div>
         )}
 
@@ -279,10 +272,10 @@ export default function OrderPage() {
               {/* Submit Buttons */}
               <div className={styles.formActions}>
                 <button type="button" className={styles.btnSecondary} onClick={() => setStep(1)}>
-                  ← กลับไปเลือกสินค้อ
+                  ← กลับไปเลือกแบบเสื้อ
                 </button>
                 <button type="submit" className={styles.btnPrimary} disabled={totalQuantity === 0}>
-                  + ยืนยัน สั่งซื้อ และชำระเงิน
+                  ยืนยันสั่งซื้อ →
                 </button>
               </div>
             </form>
@@ -292,101 +285,59 @@ export default function OrderPage() {
 
       {/* Confirmation Modal */}
       {showConfirmModal && (
-        <div style={{
-          position: 'fixed',
-          top: 0,
-          left: 0,
-          right: 0,
-          bottom: 0,
-          backgroundColor: 'rgba(0, 0, 0, 0.5)',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          zIndex: 9999,
-          padding: '1rem'
-        }}>
-          <div style={{
-            backgroundColor: 'white',
-            borderRadius: '1rem',
-            padding: '2rem',
-            maxWidth: '500px',
-            width: '100%',
-            boxShadow: '0 20px 60px rgba(0,0,0,0.3)'
-          }}>
+        <div className={styles.modalOverlay}>
+          <div className={styles.modalContent}>
             {/* Header with Icon */}
-            <div style={{
-              textAlign: 'center',
-              marginBottom: '1.5rem'
-            }}>
-              <div style={{
-                width: '80px',
-                height: '80px',
-                borderRadius: '50%',
-                backgroundColor: '#E0F2FE',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                margin: '0 auto 1rem',
-                fontSize: '2.5rem'
-              }}>
+            <div className={styles.modalHeader}>
+              <div className={styles.modalIcon}>
                 ❓
               </div>
-              <h2 style={{
-                fontSize: '1.5rem',
-                fontWeight: 'bold',
-                color: '#1F2937',
-                margin: 0
-              }}>
+              <h2 className={styles.modalTitle}>
                 ยืนยันการสั่งซื้อ
               </h2>
             </div>
 
             {/* Order Details */}
-            <div style={{
-              backgroundColor: '#F9FAFB',
-              padding: '1.5rem',
-              borderRadius: '0.75rem',
-              marginBottom: '1.5rem'
-            }}>
-              <div style={{ marginBottom: '1rem' }}>
-                <p style={{ fontSize: '0.875rem', color: '#6B7280', margin: '0 0 0.25rem 0' }}>ชื่อ-นามสกุล:</p>
-                <p style={{ fontSize: '1rem', fontWeight: '600', color: '#1F2937', margin: 0 }}>
+            <div className={styles.modalDetails}>
+              <div className={styles.modalDetailRow}>
+                <p className={styles.modalDetailLabel}>ชื่อ-นามสกุล:</p>
+                <p className={styles.modalDetailValue}>
                   {formData.firstName} {formData.lastName}
                 </p>
               </div>
 
-              <div style={{ marginBottom: '1rem' }}>
-                <p style={{ fontSize: '0.875rem', color: '#6B7280', margin: '0 0 0.25rem 0' }}>โทรศัพท์:</p>
-                <p style={{ fontSize: '1rem', fontWeight: '600', color: '#1F2937', margin: 0 }}>
+              <div className={styles.modalDetailRow}>
+                <p className={styles.modalDetailLabel}>โทรศัพท์:</p>
+                <p className={styles.modalDetailValue}>
                   {formData.phone}
                 </p>
               </div>
 
-              <div style={{ marginBottom: '1rem' }}>
-                <p style={{ fontSize: '0.875rem', color: '#6B7280', margin: '0 0 0.25rem 0' }}>อีเมล:</p>
-                <p style={{ fontSize: '1rem', fontWeight: '600', color: '#1F2937', margin: 0 }}>
+              <div className={styles.modalDetailRow}>
+                <p className={styles.modalDetailLabel}>อีเมล:</p>
+                <p className={styles.modalDetailValue}>
                   {formData.email}
                 </p>
               </div>
 
-              <div style={{ marginBottom: '1rem' }}>
-                <p style={{ fontSize: '0.875rem', color: '#6B7280', margin: '0 0 0.25rem 0' }}>ที่อยู่:</p>
-                <p style={{ fontSize: '1rem', fontWeight: '600', color: '#1F2937', margin: 0 }}>
+              <div className={styles.modalDetailRow}>
+                <p className={styles.modalDetailLabel}>ที่อยู่:</p>
+                <p className={styles.modalDetailValue}>
                   {formData.address}
                 </p>
               </div>
 
-              <div style={{ marginBottom: '1rem' }}>
-                <p style={{ fontSize: '0.875rem', color: '#6B7280', margin: '0 0 0.25rem 0' }}>รูปแบบเสื้อ:</p>
-                <p style={{ fontSize: '1rem', fontWeight: '600', color: '#1F2937', margin: 0 }}>
+              <div className={styles.modalDetailRow}>
+                <p className={styles.modalDetailLabel}>รูปแบบเสื้อ:</p>
+                <p className={styles.modalDetailValue}>
                   {selectedShirtType}
                 </p>
               </div>
 
-              <div>
-                <p style={{ fontSize: '0.875rem', color: '#6B7280', margin: '0 0 0.5rem 0' }}>รายการสั่งซื้อ:</p>
+              <div className={styles.modalDetailRow}>
+                <p className={styles.modalDetailLabel}>รายการสั่งซื้อ:</p>
                 {sizes.map((item, index) => (
-                  <p key={index} style={{ fontSize: '1rem', fontWeight: '600', color: '#1F2937', margin: '0.25rem 0' }}>
+                  <p key={index} className={styles.modalDetailValue}>
                     {item.size}: {item.quantity} ตัว
                   </p>
                 ))}
@@ -394,57 +345,30 @@ export default function OrderPage() {
             </div>
 
             {/* Summary */}
-            <div style={{
-              borderTop: '2px solid #E5E7EB',
-              paddingTop: '1rem',
-              marginBottom: '1.5rem'
-            }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
-                <span style={{ color: '#6B7280' }}>จำนวนรวม:</span>
-                <span style={{ fontWeight: '600' }}>{totalQuantity} ตัว</span>
+            <div className={styles.modalSummary}>
+              <div className={styles.modalSummaryRow}>
+                <span className={styles.modalSummaryLabel}>จำนวนรวม:</span>
+                <span className={styles.modalSummaryValue}>{totalQuantity} ตัว</span>
               </div>
-              <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
-                <span style={{ color: '#6B7280' }}>ราคาเสื้อ:</span>
-                <span style={{ fontWeight: '600' }}>฿{totalPrice}</span>
+              <div className={styles.modalSummaryRow}>
+                <span className={styles.modalSummaryLabel}>ราคาเสื้อ:</span>
+                <span className={styles.modalSummaryValue}>฿{totalPrice}</span>
               </div>
-              <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
-                <span style={{ color: '#6B7280' }}>ราคาจัดส่งสินค้า:</span>
-                <span style={{ fontWeight: '600', color: '#3B82F6' }}>฿{shippingCost}</span>
+              <div className={styles.modalSummaryRow}>
+                <span className={styles.modalSummaryLabel}>ราคาจัดส่งสินค้า:</span>
+                <span className={styles.modalSummaryValue}>฿{shippingCost}</span>
               </div>
-              <div style={{
-                display: 'flex',
-                justifyContent: 'space-between',
-                paddingTop: '0.5rem',
-                borderTop: '1px solid #E5E7EB',
-                marginTop: '0.5rem'
-              }}>
-                <span style={{ fontSize: '1.125rem', fontWeight: 'bold' }}>ราคารวมทั้งสิ้น:</span>
-                <span style={{ fontSize: '1.125rem', fontWeight: 'bold', color: '#3B82F6' }}>฿{grandTotal}</span>
+              <div className={styles.modalTotal}>
+                <span className={styles.modalTotalLabel}>ราคารวมทั้งสิ้น:</span>
+                <span className={styles.modalTotalValue}>฿{grandTotal}</span>
               </div>
             </div>
 
             {/* Action Buttons */}
-            <div style={{
-              display: 'flex',
-              gap: '1rem',
-              justifyContent: 'center'
-            }}>
+            <div className={styles.modalActions}>
               <button
                 onClick={() => setShowConfirmModal(false)}
-                style={{
-                  flex: 1,
-                  padding: '0.75rem 1.5rem',
-                  backgroundColor: '#E5E7EB',
-                  color: '#374151',
-                  border: 'none',
-                  borderRadius: '0.5rem',
-                  fontSize: '1rem',
-                  fontWeight: '600',
-                  cursor: 'pointer',
-                  transition: 'all 0.3s'
-                }}
-                onMouseOver={(e) => e.currentTarget.style.backgroundColor = '#D1D5DB'}
-                onMouseOut={(e) => e.currentTarget.style.backgroundColor = '#E5E7EB'}
+                className={styles.modalBtnCancel}
               >
                 ยกเลิก
               </button>
@@ -454,20 +378,7 @@ export default function OrderPage() {
                   alert('ดำเนินการสั่งซื้อสำเร็จ!');
                   setShowConfirmModal(false);
                 }}
-                style={{
-                  flex: 1,
-                  padding: '0.75rem 1.5rem',
-                  backgroundColor: '#10B981',
-                  color: 'white',
-                  border: 'none',
-                  borderRadius: '0.5rem',
-                  fontSize: '1rem',
-                  fontWeight: '600',
-                  cursor: 'pointer',
-                  transition: 'all 0.3s'
-                }}
-                onMouseOver={(e) => e.currentTarget.style.backgroundColor = '#059669'}
-                onMouseOut={(e) => e.currentTarget.style.backgroundColor = '#10B981'}
+                className={styles.modalBtnConfirm}
               >
                 ยืนยันสั่งซื้อ
               </button>
