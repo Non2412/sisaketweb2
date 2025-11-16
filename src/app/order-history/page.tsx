@@ -3,7 +3,6 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 import styles from './order-history.module.css';
-import { Search, LogOut, Plus, ShoppingBag, Shirt, Wallet, CheckCircle } from 'lucide-react';
 
 export default function OrderHistoryPage() {
   const [orders, setOrders] = useState([
@@ -21,10 +20,10 @@ export default function OrderHistoryPage() {
   );
 
   const stats = [
-    { label: 'คำสั่งซื้อทั้งหมด', value: '12', icon: ShoppingBag, statClass: 'purple' },
-    { label: 'เสื้อที่สั่งทั้งหมด', value: '25', icon: Shirt, statClass: 'green' },
-    { label: 'ยอดรวมทั้งหมด', value: '฿12,500', icon: Wallet, statClass: 'blue' },
-    { label: 'สำเร็จแล้ว', value: '8', icon: CheckCircle, statClass: 'orange' },
+    { label: 'คำสั่งซื้อทั้งหมด', value: '12', icon: '🛒' },
+    { label: 'เสื้อที่สั่งทั้งหมด', value: '25', icon: '👕' },
+    { label: 'ยอดรวมทั้งหมด', value: '฿12,500', icon: '💳' },
+    { label: 'สำเร็จแล้ว', value: '8', icon: '✓' },
   ];
 
   return (
@@ -48,23 +47,20 @@ export default function OrderHistoryPage() {
         <div className={styles.pageHeader}>
           <h1 className={styles.pageTitle}>ประวัติการสั่งซื้อ</h1>
           <Link href="/product" className={styles.primaryButton}>
-            <Plus size={20} />
+            <span>➕</span>
             <span>สั่งซื้อเสื้อใหม่</span>
           </Link>
         </div>
 
         {/* Stats Grid */}
         <div className={styles.statsGrid}>
-          {stats.map((stat, index) => {
-            const Icon = stat.icon;
-            return (
-              <div key={index} className={`${styles.statCard} ${styles[stat.statClass]}`}>
-                <Icon className={styles.statIcon} size={24} />
-                <p className={styles.statLabel}>{stat.label}</p>
-                <p className={styles.statValue}>{stat.value}</p>
-              </div>
-            );
-          })}
+          {stats.map((stat, index) => (
+            <div key={index} className={`${styles.statCard}`}>
+              <div className={styles.statIcon}>{stat.icon}</div>
+              <p className={styles.statLabel}>{stat.label}</p>
+              <p className={styles.statValue}>{stat.value}</p>
+            </div>
+          ))}
         </div>
 
         {/* Orders Section */}
@@ -72,7 +68,7 @@ export default function OrderHistoryPage() {
           <div className={styles.orderHeader}>
             <h2 className={styles.orderTitle}>รายการคำสั่งซื้อ</h2>
             <div className={styles.searchContainer}>
-              <Search size={20} className={styles.searchIcon} />
+              <span className={styles.searchIcon}>🔍</span>
               <input
                 type="text"
                 placeholder="ค้นหาเลขที่คำสั่งซื้อ"
