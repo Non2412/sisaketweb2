@@ -1,13 +1,12 @@
 'use client';
 
 import Link from 'next/link';
-import Image from 'next/image';
 import UserDropdown from '@/components/UserDropdown';
 
 export default function ProductsPage() {
   return (
     <>
-      <style jsx>{`
+      <style>{`
         @keyframes fadeIn {
           from { opacity: 0; transform: translateY(20px); }
           to { opacity: 1; transform: translateY(0); }
@@ -120,11 +119,10 @@ export default function ProductsPage() {
                 overflow: 'hidden',
                 position: 'relative'
               }}>
-                <Image
+                <img
                   src="/images/shirt_243_black.jpg"
                   alt="เสื้อเฉลิมฉลอง 243 ปี"
-                  fill
-                  style={{ objectFit: 'cover' }}
+                  style={{ objectFit: 'cover', width: '100%', height: '100%' }}
                 />
               </div>
               <div style={{ textAlign: 'center', display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>

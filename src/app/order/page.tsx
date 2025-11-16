@@ -1,7 +1,6 @@
 'use client';
 
 import React, { useState } from 'react';
-import Image from 'next/image';
 import Link from 'next/link';
 import UserDropdown from '@/components/UserDropdown';
 import styles from './order.module.css';
@@ -79,13 +78,11 @@ export default function OrderPage() {
           <div className={styles.stepContent}>
             {/* Product Image - Large Display */}
             <div className={styles.productImageDisplay}>
-              <Image 
+              <img 
                 src="/images/shirt_243_black.jpg"
                 alt="เสื้อเฉลิมฉลอง 243 ปี"
                 width={400}
                 height={400}
-                style={{ objectFit: 'contain' }}
-                priority
               />
             </div>
 
@@ -133,12 +130,11 @@ export default function OrderPage() {
             <form onSubmit={handleSubmit} className={styles.orderForm}>
               {/* Product Info */}
               <div className={styles.productInfo}>
-                <Image 
+                <img 
                   src="/images/shirt_243_black.jpg"
                   alt={selectedShirtType || ''}
                   width={120}
                   height={120}
-                  style={{ objectFit: 'contain' }}
                 />
                 <div>
                   <h3>{selectedShirtType}</h3>

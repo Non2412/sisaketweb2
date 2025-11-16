@@ -12,7 +12,7 @@ export default function UserDropdown({ userName = "ชื่อผู้ใช�
 
   return (
     <>
-      <style jsx>{`
+      <style>{`
         .dropdown-item:hover {
           background-color: #F3F4F6;
         }

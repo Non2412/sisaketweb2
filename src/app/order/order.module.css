@@ -243,6 +243,10 @@
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
 }
 
+.productImageDisplay img {
+  object-fit: contain;
+}
+
 /* Shirt Type Selection Boxes */
 .shirtTypeSelection {
   display: grid;
@@ -303,6 +307,10 @@
   background: #f9fafb;
   border-radius: 0.5rem;
   margin-bottom: 2rem;
+}
+
+.productInfo img {
+  object-fit: contain;
 }
 
 .productInfo h3 {
