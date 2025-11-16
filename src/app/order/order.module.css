@@ -5,10 +5,11 @@
 
 /* Header */
 .header {
-  background: linear-gradient(135deg, #4f46e5 0%, #6366f1 100%);
-  color: white;
+  background: #ffffff;
+  color: #1f2937;
   padding: 1.5rem;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  border-bottom: 1px solid #e5e7eb;
 }
 
 .headerContent {
@@ -40,7 +41,7 @@
 }
 
 .backLink {
-  color: white;
+  color: #6366f1;
   text-decoration: none;
   display: inline-block;
   margin-bottom: 0.5rem;
@@ -49,11 +50,13 @@
 
 .backLink:hover {
   opacity: 1;
+  text-decoration: underline;
 }
 
 .header h1 {
   font-size: 1.75rem;
   font-weight: bold;
+  color: #1f2937;
 }
 
 /* Progress Steps */
