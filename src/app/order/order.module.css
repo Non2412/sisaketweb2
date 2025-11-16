@@ -18,6 +18,21 @@
   gap: 1rem;
 }
 
+.headerLeft {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.logo {
+  width: 250px;
+  height: 80px;
+  object-fit: contain;
+  border-radius: 0.5rem;
+  background: #ffffff;
+  padding: 0.5rem;
+}
+
 .container {
   max-width: 1000px;
   margin: 0 auto;

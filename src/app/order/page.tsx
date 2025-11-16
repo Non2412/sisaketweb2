@@ -63,9 +63,16 @@ export default function OrderPage() {
       <header className={styles.header}>
         <div className={styles.container}>
           <div className={styles.headerContent}>
-            <div>
-              <Link href="/products" className={styles.backLink}>← กลับหน้าแรก</Link>
-              <h1>สั่งซื้อเสื้อเฉลิมฉลองเนื่อง 243 ปี</h1>
+            <div className={styles.headerLeft}>
+              <img 
+                src="/images/site-logo.png" 
+                alt="ตราสัญลักษณ์จังหวัดศรีสะเกษ" 
+                className={styles.logo}
+              />
+              <div>
+                <Link href="/products" className={styles.backLink}>← กลับหน้าแรก</Link>
+                <h1>สั่งซื้อเสื้อเฉลิมฉลองเนื่อง 243 ปี</h1>
+              </div>
             </div>
             <UserDropdown />
           </div>
