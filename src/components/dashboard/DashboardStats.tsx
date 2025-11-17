@@ -70,7 +70,7 @@ export default function DashboardStats() {
 
   return (
     <div style={gridStyle}>
-      <style jsx global>{`
+      <style>{`
         .stat-card:hover {
           box-shadow: 0 10px 15px rgba(0, 0, 0, 0.15) !important;
           transform: translateY(-4px) !important;

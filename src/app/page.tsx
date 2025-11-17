@@ -1,7 +1,6 @@
 'use client';
 
 import Link from 'next/link';
-import Image from 'next/image';
 
 export default function Home() {
   return (
@@ -33,7 +32,7 @@ export default function Home() {
               width: '100%',
               marginBottom: '1rem'
             }}>
-              <Image 
+              <img 
                 src="/images/shirt_243_black.jpg"
                 alt="เสื้อแบบดี สีขาว-ทอง"
                 width={500}
@@ -86,7 +85,7 @@ export default function Home() {
               width: '100%',
               marginBottom: '1rem'
             }}>
-              <Image 
+              <img 
                 src="/images/shirt_243_black.jpg"
                 alt="เสื้อแบบดี สีขาว-ทอง"
                 width={500}
@@ -129,7 +128,7 @@ export default function Home() {
         </div>
 
         {/* CTA Buttons */}
-        <style jsx>{`
+        <style>{`
           .btn-primary {
             background: #6366f1;
             color: white;

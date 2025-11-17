@@ -5,10 +5,33 @@
 
 /* Header */
 .header {
-  background: linear-gradient(135deg, #4f46e5 0%, #6366f1 100%);
-  color: white;
+  background: #ffffff;
+  color: #1f2937;
   padding: 1.5rem;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.headerContent {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.headerLeft {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.logo {
+  width: 120px;
+  height: 80px;
+  object-fit: contain;
+  border-radius: 0.5rem;
+  background: #ffffff;
+  padding: 0.5rem;
 }
 
 .container {
@@ -18,7 +41,7 @@
 }
 
 .backLink {
-  color: white;
+  color: #6366f1;
   text-decoration: none;
   display: inline-block;
   margin-bottom: 0.5rem;
@@ -27,11 +50,13 @@
 
 .backLink:hover {
   opacity: 1;
+  text-decoration: underline;
 }
 
 .header h1 {
   font-size: 1.75rem;
   font-weight: bold;
+  color: #1f2937;
 }
 
 /* Progress Steps */
@@ -161,6 +186,13 @@
   font-weight: 600;
 }
 
+/* Button Container */
+.btnContainer {
+  display: flex;
+  justify-content: center;
+  margin-top: 2rem;
+}
+
 /* Buttons */
 .btnNext,
 .btnPrimary,
@@ -181,8 +213,6 @@
   color: white;
   width: 100%;
   max-width: 300px;
-  display: block;
-  margin: 2rem auto 0;
 }
 
 .btnNext:hover:not(:disabled),
@@ -219,6 +249,74 @@
   margin-top: 2rem;
 }
 
+/* Product Image Display - Large */
+.productImageDisplay {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 2rem;
+  background: #ffffff;
+  border-radius: 1rem;
+  margin-bottom: 2rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.productImageDisplay img {
+  object-fit: contain;
+}
+
+/* Shirt Type Selection Boxes */
+.shirtTypeSelection {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem;
+}
+
+.typeOption {
+  padding: 1.5rem;
+  border: 2px solid #e5e7eb;
+  border-radius: 0.75rem;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  background: white;
+}
+
+.typeOption:hover {
+  border-color: #4f46e5;
+  background: #f9fafb;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(79, 70, 229, 0.1);
+}
+
+.typeOption.selected {
+  border-color: #4f46e5;
+  background: #eff6ff;
+  box-shadow: 0 4px 12px rgba(79, 70, 229, 0.2);
+}
+
+.typeLabel {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: #1f2937;
+  margin-bottom: 0.5rem;
+}
+
+.typeOption.selected .typeLabel {
+  color: #4f46e5;
+}
+
+.typePrice {
+  font-size: 1rem;
+  color: #6b7280;
+  font-weight: 500;
+}
+
+.typeOption.selected .typePrice {
+  color: #4f46e5;
+  font-weight: 600;
+}
+
 .productInfo {
   display: flex;
   align-items: center;
@@ -227,6 +325,10 @@
   background: #f9fafb;
   border-radius: 0.5rem;
   margin-bottom: 2rem;
+}
+
+.productInfo img {
+  object-fit: contain;
 }
 
 .productInfo h3 {
@@ -401,4 +503,158 @@
   .formActions button {
     width: 100%;
   }
+}
+
+/* Confirmation Modal */
+.modalOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  padding: 1rem;
+}
+
+.modalContent {
+  background-color: white;
+  border-radius: 1rem;
+  padding: 2rem;
+  max-width: 500px;
+  width: 100%;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+}
+
+.modalHeader {
+  text-align: center;
+  margin-bottom: 1.5rem;
+}
+
+.modalIcon {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background-color: #E0F2FE;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 1rem;
+  font-size: 2.5rem;
+}
+
+.modalTitle {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #1F2937;
+  margin: 0;
+}
+
+.modalDetails {
+  background-color: #F9FAFB;
+  padding: 1.5rem;
+  border-radius: 0.75rem;
+  margin-bottom: 1.5rem;
+}
+
+.modalDetailRow {
+  margin-bottom: 1rem;
+}
+
+.modalDetailRow:last-child {
+  margin-bottom: 0;
+}
+
+.modalDetailLabel {
+  font-size: 0.875rem;
+  color: #6B7280;
+  margin-bottom: 0.25rem;
+}
+
+.modalDetailValue {
+  font-weight: 600;
+  color: #1F2937;
+}
+
+.modalSummary {
+  border-top: 2px solid #E5E7EB;
+  padding-top: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.modalSummaryRow {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 0.5rem;
+}
+
+.modalSummaryLabel {
+  color: #6B7280;
+}
+
+.modalSummaryValue {
+  font-weight: 600;
+  color: #1F2937;
+}
+
+.modalTotal {
+  display: flex;
+  justify-content: space-between;
+  font-size: 1.25rem;
+  font-weight: bold;
+  padding-top: 0.75rem;
+  border-top: 2px solid #E5E7EB;
+  margin-top: 0.5rem;
+}
+
+.modalTotalLabel {
+  color: #1F2937;
+}
+
+.modalTotalValue {
+  color: #4F46E5;
+}
+
+.modalActions {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+}
+
+.modalBtnCancel {
+  padding: 0.75rem 1.5rem;
+  border: 2px solid #E5E7EB;
+  background-color: white;
+  color: #6B7280;
+  font-weight: 600;
+  border-radius: 0.75rem;
+  cursor: pointer;
+  transition: all 0.3s;
+  font-size: 1rem;
+}
+
+.modalBtnCancel:hover {
+  background-color: #F9FAFB;
+  border-color: #D1D5DB;
+}
+
+.modalBtnConfirm {
+  padding: 0.75rem 2rem;
+  background: linear-gradient(135deg, #4F46E5 0%, #6366F1 100%);
+  color: white;
+  font-weight: 600;
+  border: none;
+  border-radius: 0.75rem;
+  cursor: pointer;
+  transition: all 0.3s;
+  box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3);
+  font-size: 1rem;
+}
+
+.modalBtnConfirm:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(79, 70, 229, 0.4);
 }

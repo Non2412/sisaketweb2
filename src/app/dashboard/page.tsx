@@ -55,7 +55,7 @@ export default function DashboardPage() {
         <DashboardStats />
 
         {/* Add New Order Button */}
-        <style jsx>{`
+        <style>{`
           .btn-add-order {
             background: #4f46e5;
             color: white;

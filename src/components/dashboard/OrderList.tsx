@@ -54,7 +54,7 @@ export default function OrderList() {
           </p>
 
           {/* Call to Action Button */}
-          <style jsx>{`
+          <style>{`
             .btn-order {
               background: #4f46e5;
               color: white;

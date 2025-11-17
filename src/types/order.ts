@@ -55,3 +55,64 @@ export interface CreateOrderInput {
   shirtType: ShirtType;
   sizes: ShirtSize[];
 }
+
+// Backend API Types
+export interface OrderItem {
+  productId: string;
+  productName: string;
+  size: string;
+  quantity: number;
+  pricePerUnit: number;
+  subtotal: number;
+}
+
+export interface OrderPricing {
+  subtotal: number;
+  shippingFee: number;
+  discount: number;
+  total: number;
+}
+
+export interface OrderShipping {
+  method: string;
+  firstItemFee: number;
+  additionalItemFee: number;
+  totalItems: number;
+}
+
+export interface OrderPayment {
+  method: 'promptpay' | 'bank_transfer' | 'cod';
+  status: 'pending' | 'paid' | 'failed';
+  paidAt?: Date;
+  slipUrl?: string;
+  transactionId?: string;
+}
+
+export interface CreateOrderRequest {
+  customer: {
+    name: string;
+    phone: string;
+    email?: string;
+    googleId?: string;
+    address: {
+      fullAddress: string;
+      street?: string;
+      subDistrict?: string;
+      district?: string;
+      province?: string;
+      postalCode?: string;
+    };
+  };
+  items: OrderItem[];
+  pricing: OrderPricing;
+  shipping: OrderShipping;
+  payment: OrderPayment;
+  notes?: string;
+}
+
+export interface ApiResponse<T> {
+  success: boolean;
+  message?: string;
+  data?: T;
+  count?: number;
+}
