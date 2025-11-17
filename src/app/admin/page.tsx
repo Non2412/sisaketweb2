@@ -1,7 +1,8 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import styles from './admin.module.css';
 import {
   BarChart3,
@@ -21,10 +22,13 @@ import {
 } from 'lucide-react';
 
 export default function AdminDashboard() {
+  const router = useRouter();
   const [activeTab, setActiveTab] = useState('overview');
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [showModal, setShowModal] = useState(false);
   const [modalType, setModalType] = useState<'order' | 'payment' | null>(null);
+  const [userEmail, setUserEmail] = useState('');
+  const [isLoading, setIsLoading] = useState(true);
 
   // Mock Data - Orders
   const [orders] = useState([
@@ -47,6 +51,33 @@ export default function AdminDashboard() {
     { label: 'ขณะนี้กำลังจัดส่ง', value: '8', icon: TrendingUp, color: 'orange' },
   ];
 
+  // ตรวจสอบ Token เมื่อ Component Load
+  useEffect(() => {
+    const token = localStorage.getItem('adminToken');
+    const userEmail = localStorage.getItem('adminEmail');
+    
+    if (!token) {
+      // ถ้าไม่มี token ให้ redirect ไปหน้า login
+      router.push('/login-admin');
+      return;
+    }
+
+    if (userEmail) {
+      setUserEmail(userEmail);
+    }
+    setIsLoading(false);
+  }, [router]);
+
+  const handleLogout = () => {
+    // ลบ token และ email จาก localStorage
+    localStorage.removeItem('adminToken');
+    localStorage.removeItem('adminEmail');
+    localStorage.removeItem('adminUser');
+    
+    // Redirect ไปหน้า login
+    router.push('/login-admin');
+  };
+
   const handleOpenModal = (type: 'order' | 'payment') => {
     setModalType(type);
     setShowModal(true);
@@ -68,6 +99,33 @@ export default function AdminDashboard() {
     }
   };
 
+  // Loading state
+  if (isLoading) {
+    return (
+      <div style={{
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        minHeight: '100vh',
+        backgroundColor: '#f3f4f6'
+      }}>
+        <div style={{
+          width: '48px',
+          height: '48px',
+          border: '4px solid #e5e7eb',
+          borderTop: '4px solid #3b82f6',
+          borderRadius: '50%',
+          animation: 'spin 1s linear infinite'
+        }} />
+        <style>{`
+          @keyframes spin {
+            to { transform: rotate(360deg); }
+          }
+        `}</style>
+      </div>
+    );
+  }
+
   return (
     <div className={styles.container}>
       {/* Header */}
@@ -83,10 +141,16 @@ export default function AdminDashboard() {
             <h1 className={styles.headerTitle}>Admin Dashboard</h1>
           </div>
           <div className={styles.headerRight}>
-            <button className={styles.headerButton}>
+            <button
+              onClick={handleLogout}
+              className={styles.headerButton}
+              title="ออกจากระบบ"
+            >
               <LogOut size={20} />
             </button>
-            <div className={styles.profileAvatar}></div>
+            <div className={styles.profileAvatar} title={userEmail}>
+              {userEmail ? userEmail.charAt(0).toUpperCase() : 'A'}
+            </div>
           </div>
         </div>
       </header>
