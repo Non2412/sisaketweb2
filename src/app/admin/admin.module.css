@@ -58,6 +58,12 @@
   height: 2.5rem;
   border-radius: 50%;
   background: linear-gradient(135deg, #a78bfa 0%, #7c3bed 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #ffffff;
+  font-weight: bold;
+  font-size: 0.875rem;
 }
 
 /* Main Layout */
@@ -95,9 +101,6 @@
   font-size: 0.95rem;
   font-weight: 500;
   transition: all 0.2s ease;
-}
-
-.sidebarButton {
   color: #4b5563;
   background-color: transparent;
 }
@@ -240,6 +243,7 @@
   cursor: pointer;
   transition: all 0.3s ease;
   text-align: left;
+  border: none;
 }
 
 .actionCard:hover {
@@ -310,8 +314,7 @@
 
 .searchInput:focus {
   outline: none;
-  ring: 2px solid #7c3bed;
-  border-color: transparent;
+  border-color: #7c3bed;
   box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.1);
 }
 
@@ -364,7 +367,6 @@
   font-size: 0.875rem;
   font-weight: 600;
   color: #4b5563;
-  text-transform: none;
 }
 
 .tableBodyRow {
@@ -443,6 +445,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  color: #4b5563;
 }
 
 .actionButton.view:hover {
@@ -598,8 +601,8 @@
 .modalInput:focus,
 .modalSelect:focus {
   outline: none;
-  ring: 2px solid #7c3bed;
-  border-color: transparent;
+  border-color: #7c3bed;
+  box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.1);
 }
 
 .modalFooter {
