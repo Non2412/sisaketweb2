@@ -65,43 +65,35 @@ export default function OrderPage() {
 
   // Load product and shipping data
   useEffect(() => {
+    // Set default shipping config (not calling API for now)
+    setShippingConfig({
+      value: {
+        firstItemFee: 50,
+        additionalItemFee: 10
+      }
+    });
+
+    // Optional: Load products from API when ready
+    // Uncomment when backend is ready
+    /*
     const loadData = async () => {
       try {
-        // Load products (optional - can work without it)
-        try {
-          const productsRes = await getAllProducts();
-          if (productsRes.success && productsRes.data && productsRes.data.length > 0) {
-            setProductData(productsRes.data[0]);
-          }
-        } catch (err) {
-          console.log('Products API not available, using defaults');
+        const productsRes = await getAllProducts();
+        if (productsRes.success && productsRes.data && productsRes.data.length > 0) {
+          setProductData(productsRes.data[0]);
         }
-
-        // Load shipping config (optional - use defaults if not available)
-        try {
-          const shippingRes = await getShippingSettings();
-          if (shippingRes.success) {
-            setShippingConfig(shippingRes.data);
-          }
-        } catch (err) {
-          console.log('Shipping settings API not available, using defaults');
-          // Set default shipping config
-          setShippingConfig({
-            value: {
-              firstItemFee: 50,
-              additionalItemFee: 10
-            }
-          });
-        }
-      } catch (error) {
-        console.error('Error loading data:', error);
+      } catch (err) {
+        console.log('Products API not available');
       }
     };
     loadData();
+    */
   }, []);
 
-  // Sync Google user when logged in
+  // Sync Google user when logged in (disabled for now)
   useEffect(() => {
+    // Uncomment when backend is ready
+    /*
     if (session?.user) {
       syncGoogleUser({
         googleId: session.user.id || '',
@@ -110,6 +102,7 @@ export default function OrderPage() {
         picture: session.user.image || ''
       }).catch(err => console.error('Error syncing user:', err));
     }
+    */
   }, [session]);
 
   const handleSubmit = async (e: React.FormEvent) => {

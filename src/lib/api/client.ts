@@ -24,15 +24,28 @@ export class ApiClient {
 
     try {
       const response = await fetch(url, config);
+      
+      // Check if response is JSON
+      const contentType = response.headers.get('content-type');
+      if (!contentType || !contentType.includes('application/json')) {
+        const text = await response.text();
+        console.error('Non-JSON response:', text.substring(0, 200));
+        throw new Error(`Server returned non-JSON response. Status: ${response.status}`);
+      }
+
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.message || 'API request failed');
+        throw new Error(data.message || `API request failed with status ${response.status}`);
       }
 
       return data;
-    } catch (error) {
-      console.error('API Error:', error);
+    } catch (error: any) {
+      console.error('API Error:', {
+        url,
+        error: error.message,
+        endpoint
+      });
       throw error;
     }
   }
