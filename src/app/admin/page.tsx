@@ -3,22 +3,6 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 import styles from './admin.module.css';
-import {
-  BarChart3,
-  Users,
-  ShoppingCart,
-  DollarSign,
-  TrendingUp,
-  LogOut,
-  Menu,
-  X,
-  Eye,
-  Plus,
-  Edit2,
-  Trash2,
-  Download,
-  Filter,
-} from 'lucide-react';
 
 export default function AdminDashboard() {
   const [activeTab, setActiveTab] = useState('overview');
@@ -41,10 +25,10 @@ export default function AdminDashboard() {
 
   // Stats
   const stats = [
-    { label: 'คำสั่งซื้อทั้งหมด', value: '45', icon: ShoppingCart, color: 'blue' },
-    { label: 'รายได้ทั้งหมด', value: '฿45,500', icon: DollarSign, color: 'green' },
-    { label: 'ผู้ใช้ทั้งหมด', value: '128', icon: Users, color: 'purple' },
-    { label: 'ขณะนี้กำลังจัดส่ง', value: '8', icon: TrendingUp, color: 'orange' },
+    { label: 'คำสั่งซื้อทั้งหมด', value: '45', icon: '🛒', color: 'blue' },
+    { label: 'รายได้ทั้งหมด', value: '฿45,500', icon: '💳', color: 'green' },
+    { label: 'ผู้ใช้ทั้งหมด', value: '128', icon: '👥', color: 'purple' },
+    { label: 'ขณะนี้กำลังจัดส่ง', value: '8', icon: '📈', color: 'orange' },
   ];
 
   const handleOpenModal = (type: 'order' | 'payment') => {
@@ -78,13 +62,13 @@ export default function AdminDashboard() {
               onClick={() => setSidebarOpen(!sidebarOpen)}
               className={styles.headerButton}
             >
-              {sidebarOpen ? <X size={24} /> : <Menu size={24} />}
+              {sidebarOpen ? '✕' : '☰'}
             </button>
             <h1 className={styles.headerTitle}>Admin Dashboard</h1>
           </div>
           <div className={styles.headerRight}>
             <button className={styles.headerButton}>
-              <LogOut size={20} />
+              🚪
             </button>
             <div className={styles.profileAvatar}></div>
           </div>
@@ -100,28 +84,28 @@ export default function AdminDashboard() {
                 onClick={() => setActiveTab('overview')}
                 className={`${styles.sidebarButton} ${activeTab === 'overview' ? styles.active : ''}`}
               >
-                <BarChart3 size={20} />
+                <span>📊</span>
                 <span>ภาพรวม</span>
               </button>
               <button
                 onClick={() => setActiveTab('orders')}
                 className={`${styles.sidebarButton} ${activeTab === 'orders' ? styles.active : ''}`}
               >
-                <ShoppingCart size={20} />
+                <span>🛒</span>
                 <span>จัดการคำสั่งซื้อ</span>
               </button>
               <button
                 onClick={() => setActiveTab('payments')}
                 className={`${styles.sidebarButton} ${activeTab === 'payments' ? styles.active : ''}`}
               >
-                <DollarSign size={20} />
+                <span>💰</span>
                 <span>บันทึกการโอนเงิน</span>
               </button>
               <button
                 onClick={() => setActiveTab('statistics')}
                 className={`${styles.sidebarButton} ${activeTab === 'statistics' ? styles.active : ''}`}
               >
-                <TrendingUp size={20} />
+                <span>📈</span>
                 <span>สถิติและรายงาน</span>
               </button>
               <hr className={styles.sidebarDivider} />
@@ -141,22 +125,19 @@ export default function AdminDashboard() {
 
               {/* Stats Grid */}
               <div className={styles.statsGrid}>
-                {stats.map((stat, index) => {
-                  const Icon = stat.icon;
-                  return (
-                    <div key={index} className={styles.statCard}>
-                      <div className={styles.statCardContent}>
-                        <div className={styles.statCardInfo}>
-                          <p className={styles.statCardLabel}>{stat.label}</p>
-                          <p className={styles.statCardValue}>{stat.value}</p>
-                        </div>
-                        <div className={`${styles.statCardIcon} ${styles[stat.color]}`}>
-                          <Icon size={24} />
-                        </div>
+                {stats.map((stat, index) => (
+                  <div key={index} className={styles.statCard}>
+                    <div className={styles.statCardContent}>
+                      <div className={styles.statCardInfo}>
+                        <p className={styles.statCardLabel}>{stat.label}</p>
+                        <p className={styles.statCardValue}>{stat.value}</p>
+                      </div>
+                      <div className={`${styles.statCardIcon} ${styles[stat.color]}`}>
+                        {stat.icon}
                       </div>
                     </div>
-                  );
-                })}
+                  </div>
+                ))}
               </div>
 
               {/* Quick Actions */}
@@ -165,7 +146,7 @@ export default function AdminDashboard() {
                   onClick={() => handleOpenModal('order')}
                   className={styles.actionCard}
                 >
-                  <ShoppingCart size={32} className={styles.actionCardIcon} style={{ color: '#0284c7' }} />
+                  <div className={styles.actionCardIcon} style={{ color: '#0284c7' }}>🛒</div>
                   <h3 className={styles.actionCardTitle}>ดูคำสั่งซื้อทั้งหมด</h3>
                   <p className={styles.actionCardDesc}>จัดการและตรวจสอบคำสั่งซื้อ</p>
                 </button>
@@ -173,7 +154,7 @@ export default function AdminDashboard() {
                   onClick={() => handleOpenModal('payment')}
                   className={styles.actionCard}
                 >
-                  <DollarSign size={32} className={styles.actionCardIcon} style={{ color: '#16a34a' }} />
+                  <div className={styles.actionCardIcon} style={{ color: '#16a34a' }}>💰</div>
                   <h3 className={styles.actionCardTitle}>บันทึกการโอนเงิน</h3>
                   <p className={styles.actionCardDesc}>บันทึกและตรวจสอบการชำระเงิน</p>
                 </button>
@@ -181,7 +162,7 @@ export default function AdminDashboard() {
                   onClick={() => setActiveTab('statistics')}
                   className={styles.actionCard}
                 >
-                  <TrendingUp size={32} className={styles.actionCardIcon} style={{ color: '#7c3bed' }} />
+                  <div className={styles.actionCardIcon} style={{ color: '#7c3bed' }}>📈</div>
                   <h3 className={styles.actionCardTitle}>ดูสถิติ</h3>
                   <p className={styles.actionCardDesc}>สถิติและรายงานการขาย</p>
                 </button>
@@ -196,8 +177,7 @@ export default function AdminDashboard() {
                 <div className={styles.tableHeader}>
                   <h2 className={styles.tableTitle}>จัดการคำสั่งซื้อ</h2>
                   <button className={styles.exportButton}>
-                    <Download size={20} />
-                    ส่งออก
+                    📥 ส่งออก
                   </button>
                 </div>
 
@@ -209,8 +189,7 @@ export default function AdminDashboard() {
                       className={styles.searchInput}
                     />
                     <button className={styles.filterButton}>
-                      <Filter size={20} />
-                      ตัวกรอง
+                      🔍 ตัวกรอง
                     </button>
                   </div>
                 </div>
@@ -248,13 +227,13 @@ export default function AdminDashboard() {
                           <td className={styles.tableCell}>
                             <div className={styles.actionButtons}>
                               <button className={`${styles.actionButton} ${styles.view}`} title="ดู">
-                                <Eye size={18} />
+                                👁️
                               </button>
                               <button className={`${styles.actionButton} ${styles.edit}`} title="แก้ไข">
-                                <Edit2 size={18} />
+                                ✏️
                               </button>
                               <button className={`${styles.actionButton} ${styles.delete}`} title="ลบ">
-                                <Trash2 size={18} />
+                                🗑️
                               </button>
                             </div>
                           </td>
@@ -277,8 +256,7 @@ export default function AdminDashboard() {
                     onClick={() => handleOpenModal('payment')}
                     className={styles.exportButton}
                   >
-                    <Plus size={20} />
-                    เพิ่มการโอนเงิน
+                    ➕ เพิ่มการโอนเงิน
                   </button>
                 </div>
 
@@ -311,10 +289,10 @@ export default function AdminDashboard() {
                           <td className={styles.tableCell}>
                             <div className={styles.actionButtons}>
                               <button className={`${styles.actionButton} ${styles.view}`} title="ดู">
-                                <Eye size={18} />
+                                👁️
                               </button>
                               <button className={`${styles.actionButton} ${styles.edit}`} title="แก้ไข">
-                                <Edit2 size={18} />
+                                ✏️
                               </button>
                             </div>
                           </td>
