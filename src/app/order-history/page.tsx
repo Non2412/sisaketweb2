@@ -4,6 +4,12 @@ import React, { useState } from 'react';
 import Link from 'next/link';
 import styles from './order-history.module.css';
 
+<<<<<<< HEAD
+=======
+// ❌ ลบ import ของ lucide-react ออก
+// import { Search, LogOut, Plus, ShoppingBag, Shirt, Wallet, CheckCircle } from 'lucide-react';
+
+>>>>>>> origin/Login-admin
 export default function OrderHistoryPage() {
   const [orders, setOrders] = useState([
     { id: '#CT-20240012', date: '18/07/2024', items: 3, total: '1,500', status: 'สำเร็จ', statusType: 'success' },
@@ -15,6 +21,7 @@ export default function OrderHistoryPage() {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedOrder, setSelectedOrder] = useState<typeof orders[0] | null>(null);
 
+<<<<<<< HEAD
   const filteredOrders = orders.filter(order => 
     order.id.toLowerCase().includes(searchTerm.toLowerCase())
   );
@@ -24,18 +31,37 @@ export default function OrderHistoryPage() {
     { label: 'เสื้อที่สั่งทั้งหมด', value: '25', icon: '👕' },
     { label: 'ยอดรวมทั้งหมด', value: '฿12,500', icon: '💳' },
     { label: 'สำเร็จแล้ว', value: '8', icon: '✓' },
+=======
+  const filteredOrders = orders.filter(order =>
+    order.id.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
+  // 🔄 แทน icon ด้วย emoji
+  const stats = [
+    { label: 'คำสั่งซื้อทั้งหมด', value: '12', icon: '🛍️', statClass: 'purple' },
+    { label: 'เสื้อที่สั่งทั้งหมด', value: '25', icon: '👕', statClass: 'green' },
+    { label: 'ยอดรวมทั้งหมด', value: '฿12,500', icon: '💰', statClass: 'blue' },
+    { label: 'สำเร็จแล้ว', value: '8', icon: '✔️', statClass: 'orange' },
+>>>>>>> origin/Login-admin
   ];
 
   return (
     <div className={styles.page}>
+<<<<<<< HEAD
       {/* Header */}
+=======
+>>>>>>> origin/Login-admin
       <header className={styles.navbar}>
         <div className={styles.container}>
           <div className={styles.navContent}>
             <div className={styles.logo}>Charity Tees</div>
             <nav className={styles.navLinks}>
               <Link href="/">หน้าหลัก</Link>
+<<<<<<< HEAD
               <Link href="/order">สั่งซื้อ</Link>
+=======
+              <Link href="/product">สั่งซื้อ</Link>
+>>>>>>> origin/Login-admin
               <Link href="/order-history" className={styles.active}>ประวัติการสั่งซื้อ</Link>
             </nav>
           </div>
@@ -43,31 +69,58 @@ export default function OrderHistoryPage() {
       </header>
 
       <main className={styles.mainContent}>
+<<<<<<< HEAD
         {/* Page Header */}
         <div className={styles.pageHeader}>
           <h1 className={styles.pageTitle}>ประวัติการสั่งซื้อ</h1>
           <Link href="/order" className={styles.primaryButton}>
             <span>➕</span>
+=======
+
+        <div className={styles.pageHeader}>
+          <h1 className={styles.pageTitle}>ประวัติการสั่งซื้อ</h1>
+          <Link href="/product" className={styles.primaryButton}>
+            {/* 🔄 emoji แทน Plus icon */}
+            <span style={{ fontSize: 18 }}>➕</span>
+>>>>>>> origin/Login-admin
             <span>สั่งซื้อเสื้อใหม่</span>
           </Link>
         </div>
 
+<<<<<<< HEAD
         {/* Stats Grid */}
         <div className={styles.statsGrid}>
           {stats.map((stat, index) => (
             <div key={index} className={`${styles.statCard}`}>
               <div className={styles.statIcon}>{stat.icon}</div>
+=======
+        <div className={styles.statsGrid}>
+          {stats.map((stat, index) => (
+            <div key={index} className={`${styles.statCard} ${styles[stat.statClass]}`}>
+              <span className={styles.statIcon} style={{ fontSize: 24 }}>
+                {stat.icon}
+              </span>
+>>>>>>> origin/Login-admin
               <p className={styles.statLabel}>{stat.label}</p>
               <p className={styles.statValue}>{stat.value}</p>
             </div>
           ))}
         </div>
 
+<<<<<<< HEAD
         {/* Orders Section */}
         <div className={styles.ordersSection}>
           <div className={styles.orderHeader}>
             <h2 className={styles.orderTitle}>รายการคำสั่งซื้อ</h2>
             <div className={styles.searchContainer}>
+=======
+        <div className={styles.ordersSection}>
+          <div className={styles.orderHeader}>
+            <h2 className={styles.orderTitle}>รายการคำสั่งซื้อ</h2>
+
+            <div className={styles.searchContainer}>
+              {/* 🔄 emoji แทน Search icon */}
+>>>>>>> origin/Login-admin
               <span className={styles.searchIcon}>🔍</span>
               <input
                 type="text"
@@ -79,7 +132,10 @@ export default function OrderHistoryPage() {
             </div>
           </div>
 
+<<<<<<< HEAD
           {/* Table */}
+=======
+>>>>>>> origin/Login-admin
           <div className={styles.tableWrapper}>
             <table className={styles.table}>
               <thead className={styles.tableHead}>
@@ -128,7 +184,10 @@ export default function OrderHistoryPage() {
         </div>
       </main>
 
+<<<<<<< HEAD
       {/* Modal */}
+=======
+>>>>>>> origin/Login-admin
       {selectedOrder && (
         <div className={styles.modalOverlay} onClick={() => setSelectedOrder(null)}>
           <div className={styles.modalContent} onClick={(e) => e.stopPropagation()}>
@@ -157,6 +216,10 @@ export default function OrderHistoryPage() {
                 </span>
               </div>
             </div>
+<<<<<<< HEAD
+=======
+
+>>>>>>> origin/Login-admin
             <div className={styles.modalFooter}>
               <button
                 onClick={() => setSelectedOrder(null)}

@@ -299,8 +299,11 @@
   font-weight: 600;
   transition: all 0.3s ease;
   cursor: pointer;
+<<<<<<< HEAD
   background: none;
   border: none;
+=======
+>>>>>>> origin/Login-admin
 }
 
 .actionLink:hover {
@@ -330,7 +333,10 @@
   cursor: pointer;
   transition: all 0.3s ease;
   box-shadow: 0 2px 4px rgba(124, 58, 237, 0.3);
+<<<<<<< HEAD
   text-decoration: none;
+=======
+>>>>>>> origin/Login-admin
 }
 
 .primaryButton:hover {
@@ -483,4 +489,8 @@
   .tableCell {
     padding: 0.5rem 0.25rem;
   }
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> origin/Login-admin
