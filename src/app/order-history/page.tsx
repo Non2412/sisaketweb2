@@ -3,32 +3,98 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 import styles from './order-history.module.css';
+import ReceiptPrinter from '@/components/ReceiptPrinter';
 
-// ❌ ลบ import ของ lucide-react ออก
-// import { Search, LogOut, Plus, ShoppingBag, Shirt, Wallet, CheckCircle } from 'lucide-react';
+interface Order {
+  id: string;
+  date: string;
+  items: number;
+  total: string;
+  status: string;
+  statusType: string;
+  customerName?: string;
+  customerPhone?: string;
+  address?: string;
+  itemDetails?: Array<{
+    name: string;
+    quantity: number;
+    price: number;
+  }>;
+}
 
 export default function OrderHistoryPage() {
-  const [orders, setOrders] = useState([
-    { id: '#CT-20240012', date: '18/07/2024', items: 3, total: '1,500', status: 'สำเร็จ', statusType: 'success' },
-    { id: '#CT-20240011', date: '15/07/2024', items: 1, total: '500', status: 'กำลังจัดส่ง', statusType: 'pending' },
-    { id: '#CT-20240010', date: '12/07/2024', items: 2, total: '1,000', status: 'รอดำเนินการ', statusType: 'warning' },
-    { id: '#CT-20240009', date: '10/07/2024', items: 5, total: '2,500', status: 'ยกเลิก', statusType: 'cancelled' },
+  const [orders, setOrders] = useState<Order[]>([
+    {
+      id: '#CT-20240012',
+      date: '18/07/2024',
+      items: 3,
+      total: '1,500',
+      status: 'สำเร็จ',
+      statusType: 'success',
+      customerName: 'สมชาย ใจดี',
+      customerPhone: '081-234-5678',
+      address: '123 ซ.ดินแดง ถ.ดินแดง เขตดินแดง กรุงเทพฯ 10110',
+      itemDetails: [
+        { name: 'เสื้อสีทอง (ลายไทย)', quantity: 1, price: 499 },
+        { name: 'เสื้อสีดำ (ลายโมเดิร์น)', quantity: 2, price: 499 },
+      ],
+    },
+    {
+      id: '#CT-20240011',
+      date: '15/07/2024',
+      items: 1,
+      total: '500',
+      status: 'กำลังจัดส่ง',
+      statusType: 'pending',
+      customerName: 'สมหญิง สวยใจ',
+      customerPhone: '082-345-6789',
+    },
+    {
+      id: '#CT-20240010',
+      date: '12/07/2024',
+      items: 2,
+      total: '1,000',
+      status: 'รอดำเนินการ',
+      statusType: 'warning',
+      customerName: 'สมศักดิ์ ทำดี',
+      customerPhone: '083-456-7890',
+    },
+    {
+      id: '#CT-20240009',
+      date: '10/07/2024',
+      items: 5,
+      total: '2,500',
+      status: 'ยกเลิก',
+      statusType: 'cancelled',
+      customerName: 'สมใจ หวังดี',
+      customerPhone: '084-567-8901',
+    },
   ]);
 
   const [searchTerm, setSearchTerm] = useState('');
-  const [selectedOrder, setSelectedOrder] = useState<typeof orders[0] | null>(null);
+  const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
+  const [showReceipt, setShowReceipt] = useState(false);
 
-  const filteredOrders = orders.filter(order =>
+  const filteredOrders = orders.filter((order) =>
     order.id.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  // 🔄 แทน icon ด้วย emoji
   const stats = [
     { label: 'คำสั่งซื้อทั้งหมด', value: '12', icon: '🛍️', statClass: 'purple' },
     { label: 'เสื้อที่สั่งทั้งหมด', value: '25', icon: '👕', statClass: 'green' },
     { label: 'ยอดรวมทั้งหมด', value: '฿12,500', icon: '💰', statClass: 'blue' },
     { label: 'สำเร็จแล้ว', value: '8', icon: '✔️', statClass: 'orange' },
   ];
+
+  const handlePrintReceipt = (order: Order) => {
+    setSelectedOrder(order);
+    setShowReceipt(true);
+  };
+
+  const handleCloseReceipt = () => {
+    setShowReceipt(false);
+    setSelectedOrder(null);
+  };
 
   return (
     <div className={styles.page}>
@@ -39,18 +105,18 @@ export default function OrderHistoryPage() {
             <nav className={styles.navLinks}>
               <Link href="/">หน้าหลัก</Link>
               <Link href="/product">สั่งซื้อ</Link>
-              <Link href="/order-history" className={styles.active}>ประวัติการสั่งซื้อ</Link>
+              <Link href="/order-history" className={styles.active}>
+                ประวัติการสั่งซื้อ
+              </Link>
             </nav>
           </div>
         </div>
       </header>
 
       <main className={styles.mainContent}>
-
         <div className={styles.pageHeader}>
           <h1 className={styles.pageTitle}>ประวัติการสั่งซื้อ</h1>
           <Link href="/product" className={styles.primaryButton}>
-            {/* 🔄 emoji แทน Plus icon */}
             <span style={{ fontSize: 18 }}>➕</span>
             <span>สั่งซื้อเสื้อใหม่</span>
           </Link>
@@ -73,7 +139,6 @@ export default function OrderHistoryPage() {
             <h2 className={styles.orderTitle}>รายการคำสั่งซื้อ</h2>
 
             <div className={styles.searchContainer}>
-              {/* 🔄 emoji แทน Search icon */}
               <span className={styles.searchIcon}>🔍</span>
               <input
                 type="text"
@@ -104,7 +169,9 @@ export default function OrderHistoryPage() {
                       <td className={`${styles.tableCell} ${styles.tableCellBold}`}>{order.id}</td>
                       <td className={styles.tableCell}>{order.date}</td>
                       <td className={styles.tableCell}>{order.items}</td>
-                      <td className={`${styles.tableCell} ${styles.tableCellBold}`}>฿{order.total}</td>
+                      <td className={`${styles.tableCell} ${styles.tableCellBold}`}>
+                        ฿{order.total}
+                      </td>
                       <td className={styles.tableCell}>
                         <span className={`${styles.statusBadge} ${styles[order.statusType]}`}>
                           {order.status}
@@ -112,10 +179,10 @@ export default function OrderHistoryPage() {
                       </td>
                       <td className={styles.tableCell}>
                         <button
-                          onClick={() => setSelectedOrder(order)}
+                          onClick={() => handlePrintReceipt(order)}
                           className={styles.actionLink}
                         >
-                          ดูรายละเอียด
+                          🖨️ พิมพ์ใบเสร็จ
                         </button>
                       </td>
                     </tr>
@@ -133,48 +200,13 @@ export default function OrderHistoryPage() {
         </div>
       </main>
 
-      {selectedOrder && (
-        <div className={styles.modalOverlay} onClick={() => setSelectedOrder(null)}>
+      {/* Receipt Printer Modal */}
+      {showReceipt && selectedOrder && (
+        <div className={styles.modalOverlay} onClick={handleCloseReceipt}>
           <div className={styles.modalContent} onClick={(e) => e.stopPropagation()}>
-            <h3 className={styles.modalTitle}>รายละเอียดคำสั่งซื้อ</h3>
-            <div className={styles.modalBody}>
-              <div className={styles.modalRow}>
-                <span className={styles.modalLabel}>เลขที่คำสั่งซื้อ:</span>
-                <span className={styles.modalValue}>{selectedOrder.id}</span>
-              </div>
-              <div className={styles.modalRow}>
-                <span className={styles.modalLabel}>วันที่:</span>
-                <span className={styles.modalValue}>{selectedOrder.date}</span>
-              </div>
-              <div className={styles.modalRow}>
-                <span className={styles.modalLabel}>จำนวนรายการ:</span>
-                <span className={styles.modalValue}>{selectedOrder.items} ชิ้น</span>
-              </div>
-              <div className={styles.modalRow}>
-                <span className={styles.modalLabel}>ยอดรวม:</span>
-                <span className={styles.modalValue}>฿{selectedOrder.total}</span>
-              </div>
-              <div className={styles.modalRow}>
-                <span className={styles.modalLabel}>สถานะ:</span>
-                <span className={`${styles.statusBadge} ${styles[selectedOrder.statusType]}`}>
-                  {selectedOrder.status}
-                </span>
-              </div>
-            </div>
-
-            <div className={styles.modalFooter}>
-              <button
-                onClick={() => setSelectedOrder(null)}
-                className={`${styles.modalButton} ${styles.modalButtonSecondary}`}
-              >
-                ปิด
-              </button>
-              <button
-                onClick={() => alert(`พิมพ์ใบเสร็จสำหรับ ${selectedOrder.id}`)}
-                className={`${styles.modalButton} ${styles.modalButtonPrimary}`}
-              >
-                พิมพ์
-              </button>
+            <h3 className={styles.modalTitle}>ใบเสร็จการสั่งซื้อ</h3>
+            <div style={{ maxHeight: '80vh', overflowY: 'auto' }}>
+              <ReceiptPrinter order={selectedOrder} onClose={handleCloseReceipt} />
             </div>
           </div>
         </div>
