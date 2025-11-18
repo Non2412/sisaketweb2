@@ -3,7 +3,9 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 import styles from './order-history.module.css';
-import { Search, LogOut, Plus, ShoppingBag, Shirt, Wallet, CheckCircle } from 'lucide-react';
+
+// ❌ ลบ import ของ lucide-react ออก
+// import { Search, LogOut, Plus, ShoppingBag, Shirt, Wallet, CheckCircle } from 'lucide-react';
 
 export default function OrderHistoryPage() {
   const [orders, setOrders] = useState([
@@ -16,20 +18,20 @@ export default function OrderHistoryPage() {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedOrder, setSelectedOrder] = useState<typeof orders[0] | null>(null);
 
-  const filteredOrders = orders.filter(order => 
+  const filteredOrders = orders.filter(order =>
     order.id.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
+  // 🔄 แทน icon ด้วย emoji
   const stats = [
-    { label: 'คำสั่งซื้อทั้งหมด', value: '12', icon: ShoppingBag, statClass: 'purple' },
-    { label: 'เสื้อที่สั่งทั้งหมด', value: '25', icon: Shirt, statClass: 'green' },
-    { label: 'ยอดรวมทั้งหมด', value: '฿12,500', icon: Wallet, statClass: 'blue' },
-    { label: 'สำเร็จแล้ว', value: '8', icon: CheckCircle, statClass: 'orange' },
+    { label: 'คำสั่งซื้อทั้งหมด', value: '12', icon: '🛍️', statClass: 'purple' },
+    { label: 'เสื้อที่สั่งทั้งหมด', value: '25', icon: '👕', statClass: 'green' },
+    { label: 'ยอดรวมทั้งหมด', value: '฿12,500', icon: '💰', statClass: 'blue' },
+    { label: 'สำเร็จแล้ว', value: '8', icon: '✔️', statClass: 'orange' },
   ];
 
   return (
     <div className={styles.page}>
-      {/* Header */}
       <header className={styles.navbar}>
         <div className={styles.container}>
           <div className={styles.navContent}>
@@ -44,35 +46,35 @@ export default function OrderHistoryPage() {
       </header>
 
       <main className={styles.mainContent}>
-        {/* Page Header */}
+
         <div className={styles.pageHeader}>
           <h1 className={styles.pageTitle}>ประวัติการสั่งซื้อ</h1>
           <Link href="/product" className={styles.primaryButton}>
-            <Plus size={20} />
+            {/* 🔄 emoji แทน Plus icon */}
+            <span style={{ fontSize: 18 }}>➕</span>
             <span>สั่งซื้อเสื้อใหม่</span>
           </Link>
         </div>
 
-        {/* Stats Grid */}
         <div className={styles.statsGrid}>
-          {stats.map((stat, index) => {
-            const Icon = stat.icon;
-            return (
-              <div key={index} className={`${styles.statCard} ${styles[stat.statClass]}`}>
-                <Icon className={styles.statIcon} size={24} />
-                <p className={styles.statLabel}>{stat.label}</p>
-                <p className={styles.statValue}>{stat.value}</p>
-              </div>
-            );
-          })}
+          {stats.map((stat, index) => (
+            <div key={index} className={`${styles.statCard} ${styles[stat.statClass]}`}>
+              <span className={styles.statIcon} style={{ fontSize: 24 }}>
+                {stat.icon}
+              </span>
+              <p className={styles.statLabel}>{stat.label}</p>
+              <p className={styles.statValue}>{stat.value}</p>
+            </div>
+          ))}
         </div>
 
-        {/* Orders Section */}
         <div className={styles.ordersSection}>
           <div className={styles.orderHeader}>
             <h2 className={styles.orderTitle}>รายการคำสั่งซื้อ</h2>
+
             <div className={styles.searchContainer}>
-              <Search size={20} className={styles.searchIcon} />
+              {/* 🔄 emoji แทน Search icon */}
+              <span className={styles.searchIcon}>🔍</span>
               <input
                 type="text"
                 placeholder="ค้นหาเลขที่คำสั่งซื้อ"
@@ -83,7 +85,6 @@ export default function OrderHistoryPage() {
             </div>
           </div>
 
-          {/* Table */}
           <div className={styles.tableWrapper}>
             <table className={styles.table}>
               <thead className={styles.tableHead}>
@@ -132,7 +133,6 @@ export default function OrderHistoryPage() {
         </div>
       </main>
 
-      {/* Modal */}
       {selectedOrder && (
         <div className={styles.modalOverlay} onClick={() => setSelectedOrder(null)}>
           <div className={styles.modalContent} onClick={(e) => e.stopPropagation()}>
@@ -161,6 +161,7 @@ export default function OrderHistoryPage() {
                 </span>
               </div>
             </div>
+
             <div className={styles.modalFooter}>
               <button
                 onClick={() => setSelectedOrder(null)}
