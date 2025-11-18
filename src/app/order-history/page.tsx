@@ -84,7 +84,6 @@ export default function OrderHistoryPage() {
     { label: 'เสื้อที่สั่งทั้งหมด', value: '25', icon: '👕', statClass: 'green' },
     { label: 'ยอดรวมทั้งหมด', value: '฿12,500', icon: '💰', statClass: 'blue' },
     { label: 'สำเร็จแล้ว', value: '8', icon: '✔️', statClass: 'orange' },
->>>>>>> origin/Login-admin
   ];
 
   const handlePrintReceipt = (order: Order) => {
@@ -99,10 +98,7 @@ export default function OrderHistoryPage() {
 
   return (
     <div className={styles.page}>
-<<<<<<< HEAD
       {/* Header */}
-=======
->>>>>>> origin/Login-admin
       <header className={styles.navbar}>
         <div className={styles.container}>
           <div className={styles.navContent}>
@@ -131,37 +127,23 @@ export default function OrderHistoryPage() {
           </Link>
         </div>
 
-<<<<<<< HEAD
         {/* Stats Grid */}
-        <div className={styles.statsGrid}>
-          {stats.map((stat, index) => (
-            <div key={index} className={`${styles.statCard}`}>
-              <div className={styles.statIcon}>{stat.icon}</div>
-=======
         <div className={styles.statsGrid}>
           {stats.map((stat, index) => (
             <div key={index} className={`${styles.statCard} ${styles[stat.statClass]}`}>
               <span className={styles.statIcon} style={{ fontSize: 24 }}>
                 {stat.icon}
               </span>
->>>>>>> origin/Login-admin
               <p className={styles.statLabel}>{stat.label}</p>
               <p className={styles.statValue}>{stat.value}</p>
             </div>
           ))}
         </div>
 
-<<<<<<< HEAD
         {/* Orders Section */}
         <div className={styles.ordersSection}>
           <div className={styles.orderHeader}>
             <h2 className={styles.orderTitle}>รายการคำสั่งซื้อ</h2>
-            <div className={styles.searchContainer}>
-=======
-        <div className={styles.ordersSection}>
-          <div className={styles.orderHeader}>
-            <h2 className={styles.orderTitle}>รายการคำสั่งซื้อ</h2>
-
             <div className={styles.searchContainer}>
               <span className={styles.searchIcon}>🔍</span>
               <input
@@ -174,10 +156,7 @@ export default function OrderHistoryPage() {
             </div>
           </div>
 
-<<<<<<< HEAD
           {/* Table */}
-=======
->>>>>>> origin/Login-admin
           <div className={styles.tableWrapper}>
             <table className={styles.table}>
               <thead className={styles.tableHead}>
