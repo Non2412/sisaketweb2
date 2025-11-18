@@ -14,8 +14,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "เสื้อเฉลิมฉลอง 243 ปี ศรีสะเกษ",
-  description: "สั่งซื้อเสื้อเฉลิมฉลองเนื่องในโอกาส 243 ปี จังหวัดศรีสะเกษ",
+  title: "ระบบสั่งซื้อเสื้อเฉลิมฉลอง 243 ปี จังหวัดศรีสะเกษ",
+  description: "สู่ขวัญบ้าน บายศรีเมือง รุ่งเรือง 243 ปี",
 };
 
 export default function RootLayout({

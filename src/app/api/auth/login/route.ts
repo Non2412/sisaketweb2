@@ -1,80 +1,97 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { USE_MOCK, findUserByEmail, getAllUsers } from '@/lib/mockDb';
 
-// ข้อมูล admin ชั่วคราว (ควรเก็บในฐานข้อมูล)
-const ADMIN_CREDENTIALS = {
-  email: 'admin@example.com',
-  password: 'admin123',
-};
-
-// Simple token generator (แทน JWT)
-function generateToken(email: string): string {
-  const timestamp = Date.now();
-  const randomStr = Math.random().toString(36).substring(2, 15);
-  return `${Buffer.from(email).toString('base64')}-${timestamp}-${randomStr}`;
-}
+const BACKEND_URL = process.env.NEXT_PUBLIC_API_URL || 'https://sisaket-charity-api.onrender.com';
 
 export async function POST(request: NextRequest) {
   try {
-    // ตรวจสอบ Content-Type
-    if (!request.headers.get('content-type')?.includes('application/json')) {
-      return NextResponse.json(
-        { message: 'Content-Type must be application/json' },
-        { status: 400 }
-      );
-    }
-
-    // รับข้อมูลจาก request body
     const body = await request.json();
-    const { email, password } = body;
+    
+    // MOCK API - ลบออกเมื่อ Backend พร้อม
+    if (USE_MOCK) {
+      const { email, password } = body;
 
-    // ตรวจสอบว่าได้รับ email และ password
-    if (!email || !password) {
-      return NextResponse.json(
-        { message: 'กรุณากรอกอีเมลและรหัสผ่าน' },
-        { status: 400 }
-      );
-    }
+      // ค้นหาผู้ใช้
+      const user = findUserByEmail(email);
+      
+      if (!user) {
+        console.log('❌ User not found:', email);
+        console.log('📋 Available users:', getAllUsers().map(u => u.email));
+        return NextResponse.json(
+          { 
+            success: false, 
+            message: 'ไม่พบผู้ใช้งานนี้ กรุณาลงทะเบียนก่อน' 
+          },
+          { status: 404 }
+        );
+      }
 
-    // ตรวจสอบข้อมูล admin
-    if (email !== ADMIN_CREDENTIALS.email || password !== ADMIN_CREDENTIALS.password) {
-      return NextResponse.json(
-        { message: 'อีเมลหรือรหัสผ่านไม่ถูกต้อง' },
-        { status: 401 }
-      );
-    }
+      // ตรวจสอบรหัสผ่าน (ในระบบจริงต้อง compare hash)
+      if (user.password && user.password !== password) {
+        return NextResponse.json(
+          { 
+            success: false, 
+            message: 'รหัสผ่านไม่ถูกต้อง' 
+          },
+          { status: 401 }
+        );
+      }
 
-    // สร้าง Token
-    const token = generateToken(email);
+      console.log('✅ Mock Login Success:', email);
 
-    // สร้าง response ด้วย cookie
-    const response = NextResponse.json(
-      {
-        message: 'ล็อกอินสำเร็จ',
-        token: token,
-        user: {
-          email: email,
-          role: 'admin',
+      return NextResponse.json({
+        success: true,
+        message: 'เข้าสู่ระบบสำเร็จ',
+        data: {
+          user: {
+            id: user.id,
+            email: user.email,
+            name: user.name,
+            firstName: user.firstName,
+            lastName: user.lastName,
+            phone: user.phone
+          },
+          token: `mock-token-${user.id}`
         },
-      },
-      { status: 200 }
-    );
+        token: `mock-token-${user.id}`
+      });
+    }
 
-    // ตั้ง Secure Cookie
-    response.cookies.set({
-      name: 'adminToken',
-      value: token,
-      httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: 'strict',
-      maxAge: 86400, // 24 hours
-      path: '/',
+    // REAL API - เรียก Backend จริง
+    const response = await fetch(`${BACKEND_URL}/api/auth/login`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(body),
     });
 
-    return response;
-  } catch (error) {
-    console.error('Login error:', error);
+    const data = await response.json();
+
+    if (!response.ok) {
+      return NextResponse.json(
+        { 
+          success: false, 
+          message: data.message || 'การเข้าสู่ระบบล้มเหลว' 
+        },
+        { status: response.status }
+      );
+    }
+
+    return NextResponse.json({
+      success: true,
+      message: 'เข้าสู่ระบบสำเร็จ',
+      data: data.data || data,
+      token: data.token
+    });
+
+  } catch (error: any) {
+    console.error('Login API Error:', error);
     return NextResponse.json(
-      { message: 'เกิดข้อผิดพลาดในเซิร์ฟเวอร์' },
+      { 
+        success: false, 
+        message: error.message || 'เกิดข้อผิดพลาดในการเข้าสู่ระบบ' 
+      },
       { status: 500 }
     );
   }

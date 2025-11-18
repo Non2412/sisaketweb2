@@ -1,9 +1,14 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
+import { useSession } from 'next-auth/react';
 import UserDropdown from '@/components/UserDropdown';
 import styles from './order.module.css';
+import { createOrder, getShippingSettings } from '@/lib/api/backend';
+import { getAllProducts } from '@/lib/api/products';
+import { syncGoogleUser } from '@/lib/api/users';
+import type { CreateOrderRequest } from '@/types/order';
 
 interface SizeQuantity {
   size: string;
@@ -11,11 +16,14 @@ interface SizeQuantity {
 }
 
 export default function OrderPage() {
+  const { data: session } = useSession();
   const [step, setStep] = useState(1);
   const [selectedShirtType, setSelectedShirtType] = useState<'แบบสีปกติ' | 'แบบไว้ทุกข์' | null>(null);
   const [sizes, setSizes] = useState<SizeQuantity[]>([]);
   const [showConfirmModal, setShowConfirmModal] = useState(false);
-  const [paymentMethod, setPaymentMethod] = useState<'promptpay' | 'bank' | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [productData, setProductData] = useState<any>(null);
+  const [shippingConfig, setShippingConfig] = useState<any>(null);
 
   // Form data
   const [formData, setFormData] = useState({
@@ -47,20 +55,129 @@ export default function OrderPage() {
     });
   };
 
+  const PRICE_PER_ITEM = 299;
   const totalQuantity = sizes.reduce((sum, s) => sum + s.quantity, 0);
-  const totalPrice = totalQuantity * 198;
-  const shippingCost = totalQuantity > 0 ? 50 + ((totalQuantity - 1) * 10) : 0;
+  const totalPrice = totalQuantity * PRICE_PER_ITEM;
+  const shippingCost = totalQuantity > 0 
+    ? (shippingConfig?.value?.firstItemFee || 50) + ((totalQuantity - 1) * (shippingConfig?.value?.additionalItemFee || 10))
+    : 0;
   const grandTotal = totalPrice + shippingCost;
 
-  const handleSubmit = (e: React.FormEvent) => {
+  // Load product and shipping data
+  useEffect(() => {
+    // Set default shipping config (not calling API for now)
+    setShippingConfig({
+      value: {
+        firstItemFee: 50,
+        additionalItemFee: 10
+      }
+    });
+
+    // Optional: Load products from API when ready
+    // Uncomment when backend is ready
+    /*
+    const loadData = async () => {
+      try {
+        const productsRes = await getAllProducts();
+        if (productsRes.success && productsRes.data && productsRes.data.length > 0) {
+          setProductData(productsRes.data[0]);
+        }
+      } catch (err) {
+        console.log('Products API not available');
+      }
+    };
+    loadData();
+    */
+  }, []);
+
+  // Sync Google user when logged in (disabled for now)
+  useEffect(() => {
+    // Uncomment when backend is ready
+    /*
+    if (session?.user) {
+      syncGoogleUser({
+        googleId: session.user.id || '',
+        email: session.user.email || '',
+        name: session.user.name || '',
+        picture: session.user.image || ''
+      }).catch(err => console.error('Error syncing user:', err));
+    }
+    */
+  }, [session]);
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // ไปหน้าชำระเงิน
-    setStep(3);
+    setShowConfirmModal(true);
   };
 
-  const handlePaymentConfirm = () => {
-    // แสดง modal ยืนยันการสั่งซื้อ
-    setShowConfirmModal(true);
+  const confirmOrder = async () => {
+    setIsSubmitting(true);
+    try {
+      // Prepare order data
+      const orderData: CreateOrderRequest = {
+        customer: {
+          name: `${formData.firstName} ${formData.lastName}`,
+          phone: formData.phone,
+          email: formData.email || undefined,
+          googleId: session?.user?.id,
+          address: {
+            fullAddress: formData.address
+          }
+        },
+        items: sizes.map(size => ({
+          productId: productData?._id || '674c3a3072f6b7dd0d929f85',
+          productName: 'เสื้อเฉลิมฉลองเมือง 243 ปี',
+          size: size.size,
+          quantity: size.quantity,
+          pricePerUnit: PRICE_PER_ITEM,
+          subtotal: size.quantity * PRICE_PER_ITEM
+        })),
+        pricing: {
+          subtotal: totalPrice,
+          shippingFee: shippingCost,
+          discount: 0,
+          total: grandTotal
+        },
+        shipping: {
+          method: 'standard',
+          firstItemFee: shippingConfig?.value?.firstItemFee || 50,
+          additionalItemFee: shippingConfig?.value?.additionalItemFee || 10,
+          totalItems: totalQuantity
+        },
+        payment: {
+          method: 'promptpay',
+          status: 'pending'
+        },
+        notes: formData.notes
+      };
+
+      // Send to backend
+      const response = await createOrder(orderData);
+      
+      if (response.success) {
+        alert(`✅ สั่งซื้อสำเร็จ!\nเลขที่ออเดอร์: ${response.data.orderNumber}`);
+        // Reset form
+        setShowConfirmModal(false);
+        setStep(1);
+        setSelectedShirtType(null);
+        setSizes([]);
+        setFormData({
+          firstName: '',
+          lastName: '',
+          phone: '',
+          email: '',
+          address: '',
+          notes: ''
+        });
+      } else {
+        throw new Error(response.message || 'เกิดข้อผิดพลาด');
+      }
+    } catch (error: any) {
+      console.error('Order error:', error);
+      alert(`❌ เกิดข้อผิดพลาด: ${error.message || 'ไม่สามารถสร้างออเดอร์ได้'}`);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -480,18 +597,16 @@ export default function OrderPage() {
               <button
                 onClick={() => setShowConfirmModal(false)}
                 className={styles.modalBtnCancel}
+                disabled={isSubmitting}
               >
                 ยกเลิก
               </button>
               <button
-                onClick={() => {
-                  // TODO: Process payment
-                  alert('ดำเนินการสั่งซื้อสำเร็จ!');
-                  setShowConfirmModal(false);
-                }}
+                onClick={confirmOrder}
                 className={styles.modalBtnConfirm}
+                disabled={isSubmitting}
               >
-                ยืนยันสั่งซื้อ
+                {isSubmitting ? 'กำลังดำเนินการ...' : 'ยืนยันสั่งซื้อ'}
               </button>
             </div>
           </div>
