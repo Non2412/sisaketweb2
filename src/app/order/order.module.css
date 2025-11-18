@@ -1,0 +1,660 @@
+.orderPage {
+  min-height: 100vh;
+  background: #f9fafb;
+}
+
+/* Header */
+.header {
+  background: #ffffff;
+  color: #1f2937;
+  padding: 1.5rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.headerContent {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.headerLeft {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.logo {
+  width: 120px;
+  height: 80px;
+  object-fit: contain;
+  border-radius: 0.5rem;
+  background: #ffffff;
+  padding: 0.5rem;
+}
+
+.container {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 0 1rem;
+}
+
+.backLink {
+  color: #6366f1;
+  text-decoration: none;
+  display: inline-block;
+  margin-bottom: 0.5rem;
+  opacity: 0.9;
+}
+
+.backLink:hover {
+  opacity: 1;
+  text-decoration: underline;
+}
+
+.header h1 {
+  font-size: 1.75rem;
+  font-weight: bold;
+  color: #1f2937;
+}
+
+/* Progress Steps */
+.progressSteps {
+  display: flex;
+  justify-content: center;
+  gap: 4rem;
+  margin: 3rem 0;
+  padding: 0 1rem;
+}
+
+.step {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  opacity: 0.4;
+}
+
+.step.active {
+  opacity: 1;
+}
+
+.stepNumber {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background: #e5e7eb;
+  color: #6b7280;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.25rem;
+  font-weight: bold;
+}
+
+.step.active .stepNumber {
+  background: #4f46e5;
+  color: white;
+}
+
+.stepLabel {
+  font-size: 0.875rem;
+  color: #6b7280;
+  text-align: center;
+}
+
+.step.active .stepLabel {
+  color: #1f2937;
+  font-weight: 600;
+}
+
+/* Step Content */
+.stepContent {
+  background: white;
+  border-radius: 1rem;
+  padding: 2rem;
+  margin: 2rem auto;
+  max-width: 900px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.stepContent h2 {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #1f2937;
+  margin-bottom: 2rem;
+  text-align: center;
+}
+
+/* Shirt Selection */
+.shirtSelection {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 2rem;
+  margin-bottom: 2rem;
+}
+
+.shirtOption {
+  border: 3px solid #e5e7eb;
+  border-radius: 1rem;
+  padding: 1.5rem;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.shirtOption:hover {
+  border-color: #4f46e5;
+  transform: translateY(-5px);
+  box-shadow: 0 8px 12px rgba(79, 70, 229, 0.2);
+}
+
+.shirtOption.selected {
+  border-color: #4f46e5;
+  background: #eff6ff;
+}
+
+.shirtImagePlaceholder,
+.shirtImageWrapper {
+  width: 100%;
+  height: 250px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #f9fafb;
+  border-radius: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.shirtImagePlaceholder {
+  color: #6b7280;
+  font-size: 1.125rem;
+  text-align: center;
+}
+
+.shirtOption h3 {
+  font-size: 1.25rem;
+  font-weight: bold;
+  color: #1f2937;
+  margin-bottom: 0.5rem;
+}
+
+.price {
+  font-size: 1.125rem;
+  color: #4f46e5;
+  font-weight: 600;
+}
+
+/* Button Container */
+.btnContainer {
+  display: flex;
+  justify-content: center;
+  margin-top: 2rem;
+}
+
+/* Buttons */
+.btnNext,
+.btnPrimary,
+.btnSecondary,
+.btnBack {
+  padding: 0.875rem 2rem;
+  border-radius: 0.5rem;
+  font-weight: 600;
+  font-size: 1rem;
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.btnNext,
+.btnPrimary {
+  background: #4f46e5;
+  color: white;
+  width: 100%;
+  max-width: 300px;
+}
+
+.btnNext:hover:not(:disabled),
+.btnPrimary:hover:not(:disabled) {
+  background: #4338ca;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(79, 70, 229, 0.3);
+}
+
+.btnNext:disabled,
+.btnPrimary:disabled {
+  background: #d1d5db;
+  cursor: not-allowed;
+}
+
+.btnSecondary,
+.btnBack {
+  background: white;
+  color: #4f46e5;
+  border: 2px solid #4f46e5;
+}
+
+.btnSecondary:hover,
+.btnBack:hover {
+  background: #eff6ff;
+}
+
+.btnBack {
+  margin-bottom: 1.5rem;
+}
+
+/* Form */
+.orderForm {
+  margin-top: 2rem;
+}
+
+/* Product Image Display - Large */
+.productImageDisplay {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 2rem;
+  background: #ffffff;
+  border-radius: 1rem;
+  margin-bottom: 2rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.productImageDisplay img {
+  object-fit: contain;
+}
+
+/* Shirt Type Selection Boxes */
+.shirtTypeSelection {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem;
+}
+
+.typeOption {
+  padding: 1.5rem;
+  border: 2px solid #e5e7eb;
+  border-radius: 0.75rem;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  background: white;
+}
+
+.typeOption:hover {
+  border-color: #4f46e5;
+  background: #f9fafb;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(79, 70, 229, 0.1);
+}
+
+.typeOption.selected {
+  border-color: #4f46e5;
+  background: #eff6ff;
+  box-shadow: 0 4px 12px rgba(79, 70, 229, 0.2);
+}
+
+.typeLabel {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: #1f2937;
+  margin-bottom: 0.5rem;
+}
+
+.typeOption.selected .typeLabel {
+  color: #4f46e5;
+}
+
+.typePrice {
+  font-size: 1rem;
+  color: #6b7280;
+  font-weight: 500;
+}
+
+.typeOption.selected .typePrice {
+  color: #4f46e5;
+  font-weight: 600;
+}
+
+.productInfo {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem;
+  background: #f9fafb;
+  border-radius: 0.5rem;
+  margin-bottom: 2rem;
+}
+
+.productInfo img {
+  object-fit: contain;
+}
+
+.productInfo h3 {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: #1f2937;
+}
+
+.productInfo p {
+  color: #6b7280;
+}
+
+.formSection {
+  margin-bottom: 2rem;
+  padding-bottom: 2rem;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.formSection:last-child {
+  border-bottom: none;
+}
+
+.formSection h3 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #1f2937;
+  margin-bottom: 1rem;
+}
+
+.formGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+}
+
+.formGroup {
+  margin-bottom: 1rem;
+}
+
+.formGroup label {
+  display: block;
+  font-weight: 500;
+  color: #374151;
+  margin-bottom: 0.5rem;
+}
+
+.formGroup input,
+.formGroup textarea {
+  width: 100%;
+  padding: 0.75rem;
+  border: 1px solid #d1d5db;
+  border-radius: 0.5rem;
+  font-size: 1rem;
+}
+
+.formGroup input:focus,
+.formGroup textarea:focus {
+  outline: none;
+  border-color: #4f46e5;
+  box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+}
+
+/* Size Grid */
+.sizeGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+  gap: 1rem;
+}
+
+.sizeItem {
+  text-align: center;
+}
+
+.sizeItem label {
+  display: block;
+  font-weight: 600;
+  color: #374151;
+  margin-bottom: 0.5rem;
+}
+
+.quantityControl {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.quantityControl button {
+  width: 32px;
+  height: 32px;
+  border: 1px solid #d1d5db;
+  background: white;
+  border-radius: 0.25rem;
+  cursor: pointer;
+  font-weight: bold;
+  color: #4f46e5;
+}
+
+.quantityControl button:hover {
+  background: #eff6ff;
+}
+
+.quantityControl input {
+  width: 50px;
+  height: 32px;
+  text-align: center;
+  border: 1px solid #d1d5db;
+  border-radius: 0.25rem;
+}
+
+/* Order Summary */
+.orderSummary {
+  background: #f9fafb;
+  padding: 1.5rem;
+  border-radius: 0.5rem;
+  margin-bottom: 2rem;
+}
+
+.orderSummary h3 {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: #1f2937;
+  margin-bottom: 1rem;
+}
+
+.summaryRow {
+  display: flex;
+  justify-content: space-between;
+  padding: 0.5rem 0;
+  color: #4b5563;
+}
+
+.summaryRow.total {
+  border-top: 2px solid #d1d5db;
+  margin-top: 0.5rem;
+  padding-top: 1rem;
+  font-size: 1.125rem;
+  font-weight: bold;
+  color: #1f2937;
+}
+
+.summaryRow.total span:last-child {
+  color: #4f46e5;
+}
+
+/* Form Actions */
+.formActions {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.formActions button {
+  flex: 1;
+  min-width: 200px;
+}
+
+/* Responsive */
+@media (max-width: 640px) {
+  .progressSteps {
+    gap: 2rem;
+  }
+  
+  .stepContent {
+    padding: 1rem;
+  }
+  
+  .formActions {
+    flex-direction: column;
+  }
+  
+  .formActions button {
+    width: 100%;
+  }
+}
+
+/* Confirmation Modal */
+.modalOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  padding: 1rem;
+}
+
+.modalContent {
+  background-color: white;
+  border-radius: 1rem;
+  padding: 2rem;
+  max-width: 500px;
+  width: 100%;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+}
+
+.modalHeader {
+  text-align: center;
+  margin-bottom: 1.5rem;
+}
+
+.modalIcon {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background-color: #E0F2FE;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 1rem;
+  font-size: 2.5rem;
+}
+
+.modalTitle {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #1F2937;
+  margin: 0;
+}
+
+.modalDetails {
+  background-color: #F9FAFB;
+  padding: 1.5rem;
+  border-radius: 0.75rem;
+  margin-bottom: 1.5rem;
+}
+
+.modalDetailRow {
+  margin-bottom: 1rem;
+}
+
+.modalDetailRow:last-child {
+  margin-bottom: 0;
+}
+
+.modalDetailLabel {
+  font-size: 0.875rem;
+  color: #6B7280;
+  margin-bottom: 0.25rem;
+}
+
+.modalDetailValue {
+  font-weight: 600;
+  color: #1F2937;
+}
+
+.modalSummary {
+  border-top: 2px solid #E5E7EB;
+  padding-top: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.modalSummaryRow {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 0.5rem;
+}
+
+.modalSummaryLabel {
+  color: #6B7280;
+}
+
+.modalSummaryValue {
+  font-weight: 600;
+  color: #1F2937;
+}
+
+.modalTotal {
+  display: flex;
+  justify-content: space-between;
+  font-size: 1.25rem;
+  font-weight: bold;
+  padding-top: 0.75rem;
+  border-top: 2px solid #E5E7EB;
+  margin-top: 0.5rem;
+}
+
+.modalTotalLabel {
+  color: #1F2937;
+}
+
+.modalTotalValue {
+  color: #4F46E5;
+}
+
+.modalActions {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+}
+
+.modalBtnCancel {
+  padding: 0.75rem 1.5rem;
+  border: 2px solid #E5E7EB;
+  background-color: white;
+  color: #6B7280;
+  font-weight: 600;
+  border-radius: 0.75rem;
+  cursor: pointer;
+  transition: all 0.3s;
+  font-size: 1rem;
+}
+
+.modalBtnCancel:hover {
+  background-color: #F9FAFB;
+  border-color: #D1D5DB;
+}
+
+.modalBtnConfirm {
+  padding: 0.75rem 2rem;
+  background: linear-gradient(135deg, #4F46E5 0%, #6366F1 100%);
+  color: white;
+  font-weight: 600;
+  border: none;
+  border-radius: 0.75rem;
+  cursor: pointer;
+  transition: all 0.3s;
+  box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3);
+  font-size: 1rem;
+}
+
+.modalBtnConfirm:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(79, 70, 229, 0.4);
+}

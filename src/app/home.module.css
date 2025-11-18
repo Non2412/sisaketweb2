@@ -1,0 +1,264 @@
+.homePage {
+  min-height: 100vh;
+  background: linear-gradient(to bottom, #f9fafb 0%, #e5e7eb 100%);
+}
+
+/* Header */
+.header {
+  background: linear-gradient(135deg, #4f46e5 0%, #6366f1 100%);
+  color: white;
+  padding: 2rem 1rem;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.headerContent {
+  max-width: 1280px;
+  margin: 0 auto;
+}
+
+.logoSection {
+  text-align: center;
+}
+
+.logos {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 2rem;
+  margin-bottom: 1.5rem;
+}
+
+.logo {
+  border-radius: 0.5rem;
+  background: transparent;
+  padding: 0;
+}
+
+.header h1 {
+  font-size: 2rem;
+  font-weight: bold;
+  line-height: 1.4;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+/* Hero Section */
+.hero {
+  padding: 3rem 1rem;
+}
+
+.container {
+  max-width: 1280px;
+  margin: 0 auto;
+}
+
+.heroContent {
+  text-align: center;
+}
+
+.mainTitle {
+  font-size: 2.5rem;
+  font-weight: bold;
+  color: #1f2937;
+  margin-bottom: 1rem;
+}
+
+.subtitle {
+  font-size: 1.25rem;
+  color: #6b7280;
+  margin-bottom: 3rem;
+}
+
+/* Shirt Grid */
+.shirtGrid {
+  display: grid;
+  grid-template-columns: repeat(1, 1fr);
+  gap: 2rem;
+  margin-bottom: 3rem;
+}
+
+@media (min-width: 768px) {
+  .shirtGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.shirtCard {
+  background: white;
+  border-radius: 1rem;
+  padding: 2rem;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+}
+
+.shirtCard:hover {
+  box-shadow: 0 10px 15px rgba(0, 0, 0, 0.15);
+  transform: translateY(-5px);
+}
+
+.shirtImage {
+  width: 100%;
+  height: 300px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 1.5rem;
+  background: #f9fafb;
+  border-radius: 0.5rem;
+}
+
+.shirtCard h3 {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #1f2937;
+  margin-bottom: 1rem;
+}
+
+.price {
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.priceTag {
+  font-size: 1rem;
+  color: #6b7280;
+}
+
+.priceAmount {
+  font-size: 2rem;
+  font-weight: bold;
+  color: #4f46e5;
+}
+
+.detail {
+  color: #9ca3af;
+  font-size: 0.875rem;
+}
+
+/* CTA Buttons */
+.ctaButtons {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  max-width: 400px;
+  margin: 0 auto 3rem;
+}
+
+@media (min-width: 640px) {
+  .ctaButtons {
+    flex-direction: row;
+    max-width: 600px;
+  }
+}
+
+.btnPrimary,
+.btnSecondary {
+  padding: 1rem 2rem;
+  border-radius: 0.5rem;
+  font-weight: 600;
+  font-size: 1.125rem;
+  text-decoration: none;
+  text-align: center;
+  transition: all 0.3s ease;
+  flex: 1;
+}
+
+.btnPrimary {
+  background: #4f46e5;
+  color: white;
+  box-shadow: 0 4px 6px rgba(79, 70, 229, 0.3);
+}
+
+.btnPrimary:hover {
+  background: #4338ca;
+  box-shadow: 0 6px 8px rgba(79, 70, 229, 0.4);
+  transform: translateY(-2px);
+}
+
+.btnSecondary {
+  background: white;
+  color: #4f46e5;
+  border: 2px solid #4f46e5;
+}
+
+.btnSecondary:hover {
+  background: #4f46e5;
+  color: white;
+  transform: translateY(-2px);
+}
+
+/* Info Section */
+.infoSection {
+  background: white;
+  border-radius: 1rem;
+  padding: 2rem;
+  max-width: 600px;
+  margin: 0 auto;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.infoSection h3 {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #1f2937;
+  margin-bottom: 1rem;
+  text-align: center;
+}
+
+.infoSection ul {
+  list-style: none;
+  padding: 0;
+}
+
+.infoSection li {
+  padding: 0.75rem 0;
+  color: #4b5563;
+  font-size: 1.125rem;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.infoSection li:last-child {
+  border-bottom: none;
+}
+
+/* Footer */
+.footer {
+  background: #1f2937;
+  color: white;
+  padding: 2rem 1rem;
+  text-align: center;
+  margin-top: 4rem;
+}
+
+.youngLogo {
+  margin-bottom: 1rem;
+  display: flex;
+  justify-content: center;
+}
+
+.footer p {
+  margin: 0.5rem 0;
+  color: #d1d5db;
+}
+
+/* Responsive */
+@media (max-width: 640px) {
+  .header h1 {
+    font-size: 1.5rem;
+  }
+  
+  .mainTitle {
+    font-size: 1.875rem;
+  }
+  
+  .logos {
+    gap: 1rem;
+  }
+  
+  .logo {
+    width: 60px !important;
+    height: 60px !important;
+  }
+}
