@@ -2,12 +2,10 @@
 
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { useSession } from 'next-auth/react';
 import UserDropdown from '@/components/UserDropdown';
 import styles from './order.module.css';
 import { createOrder, getShippingSettings } from '@/lib/api/backend';
 import { getAllProducts } from '@/lib/api/products';
-import { syncGoogleUser } from '@/lib/api/users';
 import type { CreateOrderRequest } from '@/types/order';
 
 interface SizeQuantity {
@@ -16,12 +14,12 @@ interface SizeQuantity {
 }
 
 export default function OrderPage() {
-  const { data: session } = useSession();
   const [step, setStep] = useState(1);
   const [selectedShirtType, setSelectedShirtType] = useState<'แบบสีปกติ' | 'แบบไว้ทุกข์' | null>(null);
   const [sizes, setSizes] = useState<SizeQuantity[]>([]);
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [paymentMethod, setPaymentMethod] = useState<'promptpay' | 'bank' | null>(null);
   const [productData, setProductData] = useState<any>(null);
   const [shippingConfig, setShippingConfig] = useState<any>(null);
 
@@ -55,7 +53,7 @@ export default function OrderPage() {
     });
   };
 
-  const PRICE_PER_ITEM = 299;
+  const PRICE_PER_ITEM = 198;
   const totalQuantity = sizes.reduce((sum, s) => sum + s.quantity, 0);
   const totalPrice = totalQuantity * PRICE_PER_ITEM;
   const shippingCost = totalQuantity > 0 
@@ -90,23 +88,35 @@ export default function OrderPage() {
     */
   }, []);
 
-  // Sync Google user when logged in (disabled for now)
+  // Load user data from localStorage
   useEffect(() => {
-    // Uncomment when backend is ready
-    /*
-    if (session?.user) {
-      syncGoogleUser({
-        googleId: session.user.id || '',
-        email: session.user.email || '',
-        name: session.user.name || '',
-        picture: session.user.image || ''
-      }).catch(err => console.error('Error syncing user:', err));
+    const userStr = localStorage.getItem('user');
+    if (userStr) {
+      try {
+        const userData = JSON.parse(userStr);
+        setFormData(prev => ({
+          ...prev,
+          firstName: userData.firstName || '',
+          lastName: userData.lastName || '',
+          email: userData.email || '',
+          phone: userData.phone || ''
+        }));
+      } catch (error) {
+        console.error('Error loading user data:', error);
+      }
     }
-    */
-  }, [session]);
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setStep(3); // ไปหน้าเลือกวิธีชำระเงิน
+  };
+
+  const handlePaymentConfirm = () => {
+    if (!paymentMethod) {
+      alert('⚠️ กรุณาเลือกวิธีการชำระเงิน');
+      return;
+    }
     setShowConfirmModal(true);
   };
 
@@ -119,7 +129,6 @@ export default function OrderPage() {
           name: `${formData.firstName} ${formData.lastName}`,
           phone: formData.phone,
           email: formData.email || undefined,
-          googleId: session?.user?.id,
           address: {
             fullAddress: formData.address
           }
@@ -145,33 +154,83 @@ export default function OrderPage() {
           totalItems: totalQuantity
         },
         payment: {
-          method: 'promptpay',
+          method: paymentMethod === 'bank' ? 'bank_transfer' : 'promptpay',
           status: 'pending'
         },
         notes: formData.notes
       };
 
       // Send to backend
-      const response = await createOrder(orderData);
+      let orderNumber = '';
+      let savedToBackend = false;
       
-      if (response.success) {
-        alert(`✅ สั่งซื้อสำเร็จ!\nเลขที่ออเดอร์: ${response.data.orderNumber}`);
-        // Reset form
-        setShowConfirmModal(false);
-        setStep(1);
-        setSelectedShirtType(null);
-        setSizes([]);
-        setFormData({
-          firstName: '',
-          lastName: '',
-          phone: '',
-          email: '',
-          address: '',
-          notes: ''
-        });
-      } else {
-        throw new Error(response.message || 'เกิดข้อผิดพลาด');
+      try {
+        const response = await createOrder(orderData);
+        if (response.success) {
+          orderNumber = response.data.orderNumber;
+          savedToBackend = true;
+        }
+      } catch (apiError) {
+        // If API fails, continue with local storage
+        console.log('Backend unavailable, using local storage');
+        orderNumber = `CT-${Date.now().toString().slice(-8)}`;
       }
+      
+      // Save to localStorage (per user)
+      const userStr = localStorage.getItem('user');
+      if (userStr) {
+        const userData = JSON.parse(userStr);
+        const userId = userData.id || userData.email;
+        
+        const newOrder = {
+          id: orderNumber,
+          date: new Date().toLocaleDateString('th-TH', { day: '2-digit', month: '2-digit', year: 'numeric' }),
+          items: totalQuantity,
+          total: grandTotal.toLocaleString(),
+          status: 'รอดำเนินการ',
+          statusType: 'warning',
+          customerName: `${formData.firstName} ${formData.lastName}`,
+          customerPhone: formData.phone,
+          address: formData.address,
+          itemDetails: sizes.map(size => ({
+            name: `เสื้อเฉลิมฉลองเมือง 243 ปี (ไซส์ ${size.size})`,
+            quantity: size.quantity,
+            price: PRICE_PER_ITEM
+          })),
+          paymentMethod: paymentMethod === 'bank' ? 'โอนเงินผ่านธนาคาร' : 'PromptPay',
+          subtotal: totalPrice,
+          shippingCost: shippingCost
+        };
+        
+        // Get existing orders for this user
+        const ordersKey = `orders_${userId}`;
+        const existingOrders = JSON.parse(localStorage.getItem(ordersKey) || '[]');
+        existingOrders.unshift(newOrder); // Add to beginning
+        localStorage.setItem(ordersKey, JSON.stringify(existingOrders));
+        
+        // อัพเดตสถิติเสื้อที่สั่งไปแล้ว
+        const stats = JSON.parse(localStorage.getItem('shirtStats') || '{"normal": 1258, "mourning": 973}');
+        // สมมติว่าสั่งเสื้อสีปกติ (แบบง่ายๆ เพิ่มทั้งหมดใน normal)
+        stats.normal = (stats.normal || 1258) + totalQuantity;
+        localStorage.setItem('shirtStats', JSON.stringify(stats));
+      }
+      
+      alert(`✅ สั่งซื้อสำเร็จ!${savedToBackend ? '' : ' (โหมดออฟไลน์)'}\nเลขที่ออเดอร์: ${orderNumber}`);
+      
+      // Reset form
+      setShowConfirmModal(false);
+      setStep(1);
+      setSelectedShirtType(null);
+      setSizes([]);
+      setPaymentMethod(null);
+      setFormData({
+        firstName: '',
+        lastName: '',
+        phone: '',
+        email: '',
+        address: '',
+        notes: ''
+      });
     } catch (error: any) {
       console.error('Order error:', error);
       alert(`❌ เกิดข้อผิดพลาด: ${error.message || 'ไม่สามารถสร้างออเดอร์ได้'}`);

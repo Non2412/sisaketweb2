@@ -22,7 +22,6 @@ interface Order {
   }>;
 }
 
->>>>>>> origin/Login-admin
 export default function OrderHistoryPage() {
   const [orders, setOrders] = useState<Order[]>([
     {

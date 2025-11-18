@@ -29,7 +29,7 @@ export class ApiClient {
       const contentType = response.headers.get('content-type');
       if (!contentType || !contentType.includes('application/json')) {
         const text = await response.text();
-        console.error('Non-JSON response:', text.substring(0, 200));
+        console.log('Non-JSON response:', text.substring(0, 200));
         throw new Error(`Server returned non-JSON response. Status: ${response.status}`);
       }
 
@@ -41,7 +41,13 @@ export class ApiClient {
 
       return data;
     } catch (error: any) {
-      console.error('API Error:', {
+      // Provide more context for network errors but don't spam console
+      if (error.message.includes('fetch') || !error.message || error.name === 'TypeError') {
+        // Silent log for network errors (backend unavailable is expected in offline mode)
+        console.log('API unavailable (offline mode):', endpoint);
+        throw new Error(`ไม่สามารถเชื่อมต่อกับเซิร์ฟเวอร์ได้ กรุณาตรวจสอบการเชื่อมต่ออินเทอร์เน็ต`);
+      }
+      console.log('API Error:', {
         url,
         error: error.message,
         endpoint

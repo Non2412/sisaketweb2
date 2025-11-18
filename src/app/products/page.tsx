@@ -1,9 +1,25 @@
 'use client';
 
 import Link from 'next/link';
+import { useState, useEffect } from 'react';
 import UserDropdown from '@/components/UserDropdown';
 
 export default function ProductsPage() {
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [normalShirtCount, setNormalShirtCount] = useState(1258);
+  const [mourningShirtCount, setMourningShirtCount] = useState(973);
+
+  useEffect(() => {
+    // ตรวจสอบว่า user login หรือยัง
+    const user = localStorage.getItem('user');
+    setIsLoggedIn(!!user);
+    
+    // โหลดสถิติจาก localStorage
+    const stats = JSON.parse(localStorage.getItem('shirtStats') || '{"normal": 1258, "mourning": 973}');
+    setNormalShirtCount(stats.normal || 1258);
+    setMourningShirtCount(stats.mourning || 973);
+  }, []);
+
   return (
     <>
       <style>{`
@@ -69,8 +85,8 @@ export default function ProductsPage() {
             </h2>
           </div>
           
-          {/* User Dropdown */}
-          <UserDropdown />
+          {/* User Dropdown - แสดงเฉพาะเมื่อ login แล้ว */}
+          {isLoggedIn && <UserDropdown />}
         </header>
 
         {/* Main Content */}
@@ -149,14 +165,14 @@ export default function ProductsPage() {
             </div>
           </section>
 
-          {/* Order Button */}
+          {/* Order Button / Login Button */}
           <section style={{ 
             display: 'flex', 
             justifyContent: 'center',
             marginBottom: '4rem',
             padding: '0 1rem'
           }}>
-            <Link href="/order" style={{ textDecoration: 'none', width: '100%', maxWidth: '480px' }}>
+            <Link href={isLoggedIn ? "/order" : "/login"} style={{ textDecoration: 'none', width: '100%', maxWidth: '480px' }}>
               <button className="hover-btn" style={{
                 width: '100%',
                 backgroundColor: '#6F42C1',
@@ -169,7 +185,7 @@ export default function ProductsPage() {
                 cursor: 'pointer',
                 boxShadow: '0 10px 30px rgba(111, 66, 193, 0.3)',
               }}>
-                สั่งซื้อเสื้อ
+                {isLoggedIn ? 'สั่งซื้อเสื้อ' : 'เข้าสู่ระบบ'}
               </button>
             </Link>
           </section>
@@ -219,7 +235,7 @@ export default function ProductsPage() {
                   margin: '0.5rem 0',
                   lineHeight: '1'
                 }}>
-                  1,258
+                  {normalShirtCount.toLocaleString()}
                 </p>
                 <p style={{ fontSize: '0.875rem', color: '#9CA3AF' }}>ตัว</p>
               </div>
@@ -247,7 +263,7 @@ export default function ProductsPage() {
                   margin: '0.5rem 0',
                   lineHeight: '1'
                 }}>
-                  973
+                  {mourningShirtCount.toLocaleString()}
                 </p>
                 <p style={{ fontSize: '0.875rem', color: '#9CA3AF' }}>ตัว</p>
               </div>
