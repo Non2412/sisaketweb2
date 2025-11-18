@@ -181,6 +181,9 @@ export default function Home() {
           <Link href="/order" className="btn-secondary">
             สั่งซื้อเสื้อเลย
           </Link>
+          <Link href="/order-history" className="btn-secondary">
+            ประวัติการสั่งซื้อ
+          </Link>
         </div>
 
         {/* Info Section */}
