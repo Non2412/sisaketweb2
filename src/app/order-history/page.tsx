@@ -1,10 +1,9 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import Link from 'next/link';
-import styles from './dashboard.module.css';
+import styles from './order-history.module.css';
 import ReceiptPrinter from '@/components/ReceiptPrinter';
-import UserDropdown from '@/components/UserDropdown';
 
 interface Order {
   id: string;
@@ -23,60 +22,69 @@ interface Order {
   }>;
 }
 
-export default function DashboardPage() {
-  const [orders, setOrders] = useState<Order[]>([]);
+export default function OrderHistoryPage() {
+  const [orders, setOrders] = useState<Order[]>([
+    {
+      id: '#CT-20240012',
+      date: '18/07/2024',
+      items: 3,
+      total: '1,500',
+      status: 'สำเร็จ',
+      statusType: 'success',
+      customerName: 'สมชาย ใจดี',
+      customerPhone: '081-234-5678',
+      address: '123 ซ.ดินแดง ถ.ดินแดง เขตดินแดง กรุงเทพฯ 10110',
+      itemDetails: [
+        { name: 'เสื้อสีทอง (ลายไทย)', quantity: 1, price: 499 },
+        { name: 'เสื้อสีดำ (ลายโมเดิร์น)', quantity: 2, price: 499 },
+      ],
+    },
+    {
+      id: '#CT-20240011',
+      date: '15/07/2024',
+      items: 1,
+      total: '500',
+      status: 'กำลังจัดส่ง',
+      statusType: 'pending',
+      customerName: 'สมหญิง สวยใจ',
+      customerPhone: '082-345-6789',
+    },
+    {
+      id: '#CT-20240010',
+      date: '12/07/2024',
+      items: 2,
+      total: '1,000',
+      status: 'รอดำเนินการ',
+      statusType: 'warning',
+      customerName: 'สมศักดิ์ ทำดี',
+      customerPhone: '083-456-7890',
+    },
+    {
+      id: '#CT-20240009',
+      date: '10/07/2024',
+      items: 5,
+      total: '2,500',
+      status: 'ยกเลิก',
+      statusType: 'cancelled',
+      customerName: 'สมใจ หวังดี',
+      customerPhone: '084-567-8901',
+    },
+  ]);
+
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
   const [showReceipt, setShowReceipt] = useState(false);
-
-  // Load orders from localStorage (per user)
-  useEffect(() => {
-    const loadOrders = () => {
-      const userStr = localStorage.getItem('user');
-      if (userStr) {
-        const userData = JSON.parse(userStr);
-        const userId = userData.id || userData.email;
-        const ordersKey = `orders_${userId}`;
-        const savedOrders = localStorage.getItem(ordersKey);
-        if (savedOrders) {
-          const parsedOrders = JSON.parse(savedOrders);
-          setOrders(parsedOrders);
-        }
-      }
-      // No default mock orders - start with empty list
-    };
-    
-    loadOrders();
-    
-    // Listen for storage changes (when order is added from another tab/page)
-    const handleStorageChange = (e: StorageEvent) => {
-      if (e.key === 'orders') {
-        loadOrders();
-      }
-    };
-    
-    window.addEventListener('storage', handleStorageChange);
-    return () => window.removeEventListener('storage', handleStorageChange);
-  }, []);
 
   const filteredOrders = orders.filter((order) =>
     order.id.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  // Calculate stats from orders
-  const totalOrders = orders.length;
-  const totalItems = orders.reduce((sum, order) => sum + (typeof order.items === 'number' ? order.items : 0), 0);
-  const totalAmount = orders.reduce((sum, order) => {
-    const amount = typeof order.total === 'string' ? parseFloat(order.total.replace(/,/g, '')) : order.total;
-    return sum + (isNaN(amount) ? 0 : amount);
-  }, 0);
-  const completedOrders = orders.filter(order => order.status === 'สำเร็จ').length;
-
   const stats = [
-    { label: 'คำสั่งซื้อทั้งหมด', value: totalOrders.toString(), icon: '🛍️', statClass: 'purple' },
-    { label: 'เสื้อที่สั่งทั้งหมด', value: totalItems.toString(), icon: '👕', statClass: 'green' },
-    { label: 'ยอดรวมทั้งหมด', value: `฿${totalAmount.toLocaleString()}`, icon: '💰', statClass: 'blue' },
-    { label: 'สำเร็จแล้ว', value: completedOrders.toString(), icon: '✔️', statClass: 'orange' },
+    { label: 'คำสั่งซื้อทั้งหมด', value: '12', icon: '🛍️', statClass: 'purple' },
+    { label: 'เสื้อที่สั่งทั้งหมด', value: '25', icon: '👕', statClass: 'green' },
+    { label: 'ยอดรวมทั้งหมด', value: '฿12,500', icon: '💰', statClass: 'blue' },
+    { label: 'สำเร็จแล้ว', value: '8', icon: '✔️', statClass: 'orange' },
+>>>>>>> origin/Login-admin
   ];
 
   const handlePrintReceipt = (order: Order) => {
@@ -91,12 +99,24 @@ export default function DashboardPage() {
 
   return (
     <div className={styles.page}>
+<<<<<<< HEAD
       {/* Header */}
+=======
+>>>>>>> origin/Login-admin
       <header className={styles.navbar}>
         <div className={styles.container}>
           <div className={styles.navContent}>
             <div className={styles.logo}>Charity Tees</div>
-            <UserDropdown />
+            <nav className={styles.navLinks}>
+              <Link href="/">หน้าหลัก</Link>
+<<<<<<< HEAD
+              <Link href="/order">สั่งซื้อ</Link>
+=======
+              <Link href="/product">สั่งซื้อ</Link>
+              <Link href="/order-history" className={styles.active}>
+                ประวัติการสั่งซื้อ
+              </Link>
+            </nav>
           </div>
         </div>
       </header>
@@ -104,29 +124,44 @@ export default function DashboardPage() {
       <main className={styles.mainContent}>
         <div className={styles.pageHeader}>
           <h1 className={styles.pageTitle}>ประวัติการสั่งซื้อ</h1>
-          <Link href="/order" className={styles.primaryButton}>
+          <Link href="/product" className={styles.primaryButton}>
             <span style={{ fontSize: 18 }}>➕</span>
+>>>>>>> origin/Login-admin
             <span>สั่งซื้อเสื้อใหม่</span>
           </Link>
         </div>
 
+<<<<<<< HEAD
         {/* Stats Grid */}
+        <div className={styles.statsGrid}>
+          {stats.map((stat, index) => (
+            <div key={index} className={`${styles.statCard}`}>
+              <div className={styles.statIcon}>{stat.icon}</div>
+=======
         <div className={styles.statsGrid}>
           {stats.map((stat, index) => (
             <div key={index} className={`${styles.statCard} ${styles[stat.statClass]}`}>
               <span className={styles.statIcon} style={{ fontSize: 24 }}>
                 {stat.icon}
               </span>
+>>>>>>> origin/Login-admin
               <p className={styles.statLabel}>{stat.label}</p>
               <p className={styles.statValue}>{stat.value}</p>
             </div>
           ))}
         </div>
 
+<<<<<<< HEAD
         {/* Orders Section */}
         <div className={styles.ordersSection}>
           <div className={styles.orderHeader}>
             <h2 className={styles.orderTitle}>รายการคำสั่งซื้อ</h2>
+            <div className={styles.searchContainer}>
+=======
+        <div className={styles.ordersSection}>
+          <div className={styles.orderHeader}>
+            <h2 className={styles.orderTitle}>รายการคำสั่งซื้อ</h2>
+
             <div className={styles.searchContainer}>
               <span className={styles.searchIcon}>🔍</span>
               <input
@@ -139,7 +174,10 @@ export default function DashboardPage() {
             </div>
           </div>
 
+<<<<<<< HEAD
           {/* Table */}
+=======
+>>>>>>> origin/Login-admin
           <div className={styles.tableWrapper}>
             <table className={styles.table}>
               <thead className={styles.tableHead}>

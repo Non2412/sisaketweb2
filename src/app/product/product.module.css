@@ -1,0 +1,331 @@
+.page {
+  background: #f8f9fa;
+  min-height: 100vh;
+  font-family: 'Noto Sans Thai', sans-serif;
+}
+
+.navbar {
+  background: white;
+  border-bottom: 1px solid #e0e0e0;
+  position: sticky;
+  top: 0;
+  z-index: 50;
+}
+
+.navContent {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 0;
+}
+
+.logo {
+  font-size: 18px;
+  font-weight: 700;
+  color: #6f42c1;
+}
+
+.navLinks {
+  display: flex;
+  gap: 24px;
+}
+
+.navLinks a {
+  font-size: 14px;
+  font-weight: 500;
+  color: #212529;
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.navLinks a:hover {
+  color: #6f42c1;
+}
+
+@media (max-width: 768px) {
+  .navLinks {
+    display: none;
+  }
+}
+
+.container {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+.hero {
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+  padding: 40px 0;
+}
+
+.heroContent {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  text-align: center;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.mainTitle {
+  font-size: 48px;
+  font-weight: 900;
+  line-height: 1.2;
+  color: #212529;
+  margin: 0;
+}
+
+.subtitle {
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 1.5;
+  color: #666;
+  margin: 0;
+}
+
+@media (max-width: 768px) {
+  .mainTitle {
+    font-size: 32px;
+  }
+
+  .subtitle {
+    font-size: 14px;
+  }
+}
+
+.arrowImageSection {
+  padding: 40px 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.shirtImageContainer {
+  width: 100%;
+  max-width: 600px;
+  display: flex;
+  justify-content: center;
+}
+
+.shirtImage {
+  width: 100%;
+  max-width: 500px;
+  height: auto;
+  object-fit: contain;
+}
+
+.productsSection {
+  padding: 40px 0;
+}
+
+.productsGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 32px;
+}
+
+.productCard {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  transition: transform 0.3s;
+}
+
+.productCard:hover {
+  transform: translateY(-4px);
+}
+
+.productImage {
+  width: 100%;
+  aspect-ratio: 3 / 4;
+  background-size: cover;
+  background-position: center;
+  border-radius: 12px;
+  overflow: hidden;
+  border: 4px solid #ff0000;
+}
+
+.productInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  text-align: center;
+}
+
+.productName {
+  font-size: 18px;
+  font-weight: 700;
+  color: #212529;
+  margin: 0;
+}
+
+.productPrice {
+  font-size: 16px;
+  font-weight: 500;
+  color: #666;
+  margin: 0;
+}
+
+.colorSelectionContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  align-items: center;
+}
+
+.colorTitle {
+  font-size: 28px;
+  font-weight: 700;
+  color: #212529;
+  margin: 0;
+  text-align: center;
+}
+
+.colorGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+  width: 100%;
+  max-width: 600px;
+}
+
+.colorButton {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  align-items: center;
+  justify-content: center;
+  padding: 32px 24px;
+  border: 2px solid #ddd;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.3s;
+  font-size: 16px;
+  font-weight: 600;
+  color: #212529;
+}
+
+.colorButton:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
+  border-color: #6f42c1;
+}
+
+.colorPrice {
+  font-size: 14px;
+  font-weight: 500;
+  color: #999;
+}
+
+@media (max-width: 768px) {
+  .productsGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .colorGrid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.ctaSection {
+  display: flex;
+  justify-content: center;
+  padding: 24px 0;
+}
+
+.primaryButton {
+  min-width: 200px;
+  padding: 16px 32px;
+  background: #6f42c1;
+  color: white;
+  border: none;
+  border-radius: 999px;
+  font-size: 18px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.3s;
+  box-shadow: 0 4px 12px rgba(111, 66, 193, 0.3);
+}
+
+.primaryButton:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(111, 66, 193, 0.4);
+}
+
+.statsSection {
+  padding: 40px 0;
+  background: white;
+}
+
+.statsTitle {
+  font-size: 28px;
+  font-weight: 700;
+  color: #212529;
+  text-align: center;
+  margin: 0 0 32px;
+}
+
+.statsGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+}
+
+.statCard {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 24px;
+  background: white;
+  border: 1px solid #e0e0e0;
+  border-radius: 12px;
+}
+
+.statIcon {
+  font-size: 48px;
+}
+
+.statLabel {
+  font-size: 14px;
+  font-weight: 500;
+  color: #666;
+  text-align: center;
+  margin: 0;
+}
+
+.statNumber {
+  font-size: 32px;
+  font-weight: 900;
+  color: #ffd700;
+  margin: 0;
+}
+
+.statUnit {
+  font-size: 12px;
+  color: #999;
+  margin: 0;
+}
+
+@media (max-width: 768px) {
+  .statsGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .mainTitle {
+    font-size: 28px;
+  }
+
+  .statsTitle {
+    font-size: 24px;
+  }
+
+  .statNumber {
+    font-size: 28px;
+  }
+}
+

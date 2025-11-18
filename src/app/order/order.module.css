@@ -658,3 +658,151 @@
   transform: translateY(-2px);
   box-shadow: 0 6px 20px rgba(79, 70, 229, 0.4);
 }
+
+/* Payment Methods */
+.paymentMethods {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.paymentOption {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1.5rem;
+  border: 2px solid #e5e7eb;
+  border-radius: 0.75rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  background: white;
+}
+
+.paymentOption:hover {
+  border-color: #4f46e5;
+  background: #f9fafb;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(79, 70, 229, 0.1);
+}
+
+.paymentOption.selected {
+  border-color: #4f46e5;
+  background: #eff6ff;
+  box-shadow: 0 4px 12px rgba(79, 70, 229, 0.2);
+}
+
+.paymentIcon {
+  font-size: 2.5rem;
+  line-height: 1;
+}
+
+.paymentInfo h4 {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: #1f2937;
+  margin-bottom: 0.25rem;
+}
+
+.paymentInfo p {
+  font-size: 0.875rem;
+  color: #6b7280;
+}
+
+.paymentOption.selected .paymentInfo h4 {
+  color: #4f46e5;
+}
+
+/* Payment Details */
+.paymentDetails {
+  margin-top: 2rem;
+  padding: 2rem;
+  background: #f9fafb;
+  border-radius: 0.75rem;
+}
+
+.paymentDetails h3 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #1f2937;
+  margin-bottom: 1.5rem;
+}
+
+.qrCodeContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.qrPlaceholder {
+  text-align: center;
+}
+
+.qrCode {
+  width: 250px;
+  height: 250px;
+  background: white;
+  border: 2px solid #e5e7eb;
+  border-radius: 0.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #9ca3af;
+  margin: 0 auto 1rem;
+}
+
+.qrPlaceholder p {
+  color: #6b7280;
+  font-size: 0.875rem;
+}
+
+.paymentInfoText {
+  width: 100%;
+  max-width: 400px;
+  padding: 1.5rem;
+  background: white;
+  border-radius: 0.5rem;
+  border: 1px solid #e5e7eb;
+}
+
+.paymentInfoText p {
+  margin-bottom: 0.75rem;
+  color: #374151;
+}
+
+.paymentInfoText p:last-child {
+  margin-bottom: 0;
+}
+
+.paymentInfoText strong {
+  color: #1f2937;
+  font-weight: 600;
+}
+
+.bankInfo {
+  padding: 1.5rem;
+  background: white;
+  border-radius: 0.5rem;
+  border: 1px solid #e5e7eb;
+}
+
+.bankInfo p {
+  margin-bottom: 1rem;
+  color: #374151;
+  font-size: 1rem;
+}
+
+.bankInfo p:last-child {
+  margin-bottom: 0;
+  font-size: 1.125rem;
+  color: #4f46e5;
+  font-weight: 600;
+}
+
+.bankInfo strong {
+  color: #1f2937;
+  font-weight: 600;
+}

@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import { useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import styles from './login.module.css';
@@ -8,20 +8,50 @@ import styles from './login.module.css';
 export default function LoginPage() {
   const router = useRouter();
   const [showPassword, setShowPassword] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState('');
   const [formData, setFormData] = useState({
-    phone: '',
+    email: '',
     password: ''
   });
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // TODO: Call login API
-    router.push('/products');
-  };
+    setIsLoading(true);
+    setError('');
 
-  const handleGoogleLogin = () => {
-    // TODO: Implement Google OAuth
-    router.push('/products');
+    try {
+      // เรียก Next.js API route (relative path) แทนการเรียก backend โดยตรง
+      const response = await fetch('/api/auth/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          email: formData.email,
+          password: formData.password
+        })
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        // บันทึก user data ลง localStorage
+        localStorage.setItem('user', JSON.stringify(data.data.user));
+        localStorage.setItem('token', data.data.token || data.token);
+        // ลบ isAdmin flag เพราะ user ธรรมดาไม่ใช่ admin
+        localStorage.removeItem('isAdmin');
+        
+        alert('✅ เข้าสู่ระบบสำเร็จ!');
+        router.push('/products');
+      } else {
+        setError(data.message || 'เข้าสู่ระบบไม่สำเร็จ');
+      }
+    } catch (err: any) {
+      setError(err.message || 'อีเมลหรือรหัสผ่านไม่ถูกต้อง');
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -47,37 +77,22 @@ export default function LoginPage() {
         {/* Form Card */}
         <div className={styles.formCard}>
           <form onSubmit={handleSubmit} className={styles.form}>
-            {/* Google Login */}
-            <button 
-              type="button"
-              className={styles.googleBtn}
-              onClick={handleGoogleLogin}
-            >
-              <svg className={styles.googleIcon} viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                <path d="M22.0125 12.2725C22.0125 11.235 21.9225 10.2225 21.75 9.24H12.2475V13.5H17.7525C17.5275 14.865 16.815 16.035 15.7575 16.785V19.41H18.66C20.73 17.55 22.0125 15.12 22.0125 12.2725Z" fill="#4285F4"/>
-                <path d="M12.2475 22.5C14.94 22.5 17.205 21.6225 18.66 20.145L15.7575 17.52C14.88 18.1125 13.68 18.45 12.2475 18.45C9.69 18.45 7.5075 16.7625 6.72 14.58H3.69V17.3025C5.1375 20.3175 8.445 22.5 12.2475 22.5Z" fill="#34A853"/>
-                <path d="M6.72 14.58C6.54 14.0475 6.4425 13.485 6.4425 12.9C6.4425 12.315 6.5475 11.7525 6.72 11.22V8.4975H3.69C3.15 9.54 2.8575 10.695 2.8575 11.925C2.8575 13.155 3.15 14.31 3.69 15.3525L6.72 12.63V14.58Z" fill="#FBBC05"/>
-                <path d="M12.2475 6.3C13.7175 6.3 15.03 6.8175 16.02 7.755L18.7275 5.0475C17.205 3.63 14.94 2.85 12.2475 2.85C8.445 2.85 5.1375 5.0325 3.69 8.0475L6.72 10.77C7.5075 8.5875 9.69 6.9 12.2475 6.3V6.3Z" fill="#EA4335"/>
-              </svg>
-              <span>Continue with Google</span>
-            </button>
+            {/* Error Message */}
+            {error && (
+              <div className={styles.errorMessage}>
+                ❌ {error}
+              </div>
+            )}
 
-            {/* Divider */}
-            <div className={styles.divider}>
-              <hr />
-              <span>OR</span>
-              <hr />
-            </div>
-
-            {/* Phone Input */}
+            {/* Email Input */}
             <div className={styles.formGroup}>
-              <label>เบอร์โทรศัพท์</label>
+              <label>อีเมล</label>
               <input
-                type="tel"
+                type="email"
                 required
-                placeholder="กรอกเบอร์โทรศัพท์"
-                value={formData.phone}
-                onChange={(e) => setFormData({...formData, phone: e.target.value})}
+                placeholder="กรอกอีเมล"
+                value={formData.email}
+                onChange={(e) => setFormData({...formData, email: e.target.value})}
               />
             </div>
 
@@ -103,8 +118,8 @@ export default function LoginPage() {
             </div>
 
             {/* Submit Button */}
-            <button type="submit" className={styles.submitBtn}>
-              เข้าสู่ระบบ
+            <button type="submit" className={styles.submitBtn} disabled={isLoading}>
+              {isLoading ? 'กำลังเข้าสู่ระบบ...' : 'เข้าสู่ระบบ'}
             </button>
           </form>
         </div>
@@ -113,6 +128,15 @@ export default function LoginPage() {
         <div className={styles.footer}>
           <p>
             ยังไม่มีบัญชี ? <Link href="/register">ลงทะเบียน</Link>
+          </p>
+          <p style={{ marginTop: '0.5rem' }}>
+            <Link href="/login-admin" style={{ 
+              color: '#DC2626', 
+              textDecoration: 'none',
+              fontSize: '0.875rem'
+            }}>
+              🔐 เข้าสู่ระบบแอดมิน
+            </Link>
           </p>
         </div>
       </div>

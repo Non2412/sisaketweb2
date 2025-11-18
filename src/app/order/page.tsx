@@ -1,9 +1,12 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import UserDropdown from '@/components/UserDropdown';
 import styles from './order.module.css';
+import { createOrder, getShippingSettings } from '@/lib/api/backend';
+import { getAllProducts } from '@/lib/api/products';
+import type { CreateOrderRequest } from '@/types/order';
 
 interface SizeQuantity {
   size: string;
@@ -12,9 +15,13 @@ interface SizeQuantity {
 
 export default function OrderPage() {
   const [step, setStep] = useState(1);
-  const [selectedShirtType, setSelectedShirtType] = useState<'แบบดี' | 'แบบโปโล' | null>(null);
+  const [selectedShirtType, setSelectedShirtType] = useState<'แบบสีปกติ' | 'แบบไว้ทุกข์' | null>(null);
   const [sizes, setSizes] = useState<SizeQuantity[]>([]);
   const [showConfirmModal, setShowConfirmModal] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [paymentMethod, setPaymentMethod] = useState<'promptpay' | 'bank' | null>(null);
+  const [productData, setProductData] = useState<any>(null);
+  const [shippingConfig, setShippingConfig] = useState<any>(null);
 
   // Form data
   const [formData, setFormData] = useState({
@@ -46,15 +53,190 @@ export default function OrderPage() {
     });
   };
 
+  const PRICE_PER_ITEM = 198;
   const totalQuantity = sizes.reduce((sum, s) => sum + s.quantity, 0);
-  const totalPrice = totalQuantity * 198;
-  const shippingCost = totalQuantity > 0 ? 50 + ((totalQuantity - 1) * 10) : 0;
+  const totalPrice = totalQuantity * PRICE_PER_ITEM;
+  const shippingCost = totalQuantity > 0 
+    ? (shippingConfig?.value?.firstItemFee || 50) + ((totalQuantity - 1) * (shippingConfig?.value?.additionalItemFee || 10))
+    : 0;
   const grandTotal = totalPrice + shippingCost;
 
-  const handleSubmit = (e: React.FormEvent) => {
+  // Load product and shipping data
+  useEffect(() => {
+    // Set default shipping config (not calling API for now)
+    setShippingConfig({
+      value: {
+        firstItemFee: 50,
+        additionalItemFee: 10
+      }
+    });
+
+    // Optional: Load products from API when ready
+    // Uncomment when backend is ready
+    /*
+    const loadData = async () => {
+      try {
+        const productsRes = await getAllProducts();
+        if (productsRes.success && productsRes.data && productsRes.data.length > 0) {
+          setProductData(productsRes.data[0]);
+        }
+      } catch (err) {
+        console.log('Products API not available');
+      }
+    };
+    loadData();
+    */
+  }, []);
+
+  // Load user data from localStorage
+  useEffect(() => {
+    const userStr = localStorage.getItem('user');
+    if (userStr) {
+      try {
+        const userData = JSON.parse(userStr);
+        setFormData(prev => ({
+          ...prev,
+          firstName: userData.firstName || '',
+          lastName: userData.lastName || '',
+          email: userData.email || '',
+          phone: userData.phone || ''
+        }));
+      } catch (error) {
+        console.error('Error loading user data:', error);
+      }
+    }
+  }, []);
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Show confirmation modal
+    setStep(3); // ไปหน้าเลือกวิธีชำระเงิน
+  };
+
+  const handlePaymentConfirm = () => {
+    if (!paymentMethod) {
+      alert('⚠️ กรุณาเลือกวิธีการชำระเงิน');
+      return;
+    }
     setShowConfirmModal(true);
+  };
+
+  const confirmOrder = async () => {
+    setIsSubmitting(true);
+    try {
+      // Prepare order data
+      const orderData: CreateOrderRequest = {
+        customer: {
+          name: `${formData.firstName} ${formData.lastName}`,
+          phone: formData.phone,
+          email: formData.email || undefined,
+          address: {
+            fullAddress: formData.address
+          }
+        },
+        items: sizes.map(size => ({
+          productId: productData?._id || '674c3a3072f6b7dd0d929f85',
+          productName: 'เสื้อเฉลิมฉลองเมือง 243 ปี',
+          size: size.size,
+          quantity: size.quantity,
+          pricePerUnit: PRICE_PER_ITEM,
+          subtotal: size.quantity * PRICE_PER_ITEM
+        })),
+        pricing: {
+          subtotal: totalPrice,
+          shippingFee: shippingCost,
+          discount: 0,
+          total: grandTotal
+        },
+        shipping: {
+          method: 'standard',
+          firstItemFee: shippingConfig?.value?.firstItemFee || 50,
+          additionalItemFee: shippingConfig?.value?.additionalItemFee || 10,
+          totalItems: totalQuantity
+        },
+        payment: {
+          method: paymentMethod === 'bank' ? 'bank_transfer' : 'promptpay',
+          status: 'pending'
+        },
+        notes: formData.notes
+      };
+
+      // Send to backend
+      let orderNumber = '';
+      let savedToBackend = false;
+      
+      try {
+        const response = await createOrder(orderData);
+        if (response.success) {
+          orderNumber = response.data.orderNumber;
+          savedToBackend = true;
+        }
+      } catch (apiError) {
+        // If API fails, continue with local storage
+        console.log('Backend unavailable, using local storage');
+        orderNumber = `CT-${Date.now().toString().slice(-8)}`;
+      }
+      
+      // Save to localStorage (per user)
+      const userStr = localStorage.getItem('user');
+      if (userStr) {
+        const userData = JSON.parse(userStr);
+        const userId = userData.id || userData.email;
+        
+        const newOrder = {
+          id: orderNumber,
+          date: new Date().toLocaleDateString('th-TH', { day: '2-digit', month: '2-digit', year: 'numeric' }),
+          items: totalQuantity,
+          total: grandTotal.toLocaleString(),
+          status: 'รอดำเนินการ',
+          statusType: 'warning',
+          customerName: `${formData.firstName} ${formData.lastName}`,
+          customerPhone: formData.phone,
+          address: formData.address,
+          itemDetails: sizes.map(size => ({
+            name: `เสื้อเฉลิมฉลองเมือง 243 ปี (ไซส์ ${size.size})`,
+            quantity: size.quantity,
+            price: PRICE_PER_ITEM
+          })),
+          paymentMethod: paymentMethod === 'bank' ? 'โอนเงินผ่านธนาคาร' : 'PromptPay',
+          subtotal: totalPrice,
+          shippingCost: shippingCost
+        };
+        
+        // Get existing orders for this user
+        const ordersKey = `orders_${userId}`;
+        const existingOrders = JSON.parse(localStorage.getItem(ordersKey) || '[]');
+        existingOrders.unshift(newOrder); // Add to beginning
+        localStorage.setItem(ordersKey, JSON.stringify(existingOrders));
+        
+        // อัพเดตสถิติเสื้อที่สั่งไปแล้ว
+        const stats = JSON.parse(localStorage.getItem('shirtStats') || '{"normal": 1258, "mourning": 973}');
+        // สมมติว่าสั่งเสื้อสีปกติ (แบบง่ายๆ เพิ่มทั้งหมดใน normal)
+        stats.normal = (stats.normal || 1258) + totalQuantity;
+        localStorage.setItem('shirtStats', JSON.stringify(stats));
+      }
+      
+      alert(`✅ สั่งซื้อสำเร็จ!${savedToBackend ? '' : ' (โหมดออฟไลน์)'}\nเลขที่ออเดอร์: ${orderNumber}`);
+      
+      // Reset form
+      setShowConfirmModal(false);
+      setStep(1);
+      setSelectedShirtType(null);
+      setSizes([]);
+      setPaymentMethod(null);
+      setFormData({
+        firstName: '',
+        lastName: '',
+        phone: '',
+        email: '',
+        address: '',
+        notes: ''
+      });
+    } catch (error: any) {
+      console.error('Order error:', error);
+      alert(`❌ เกิดข้อผิดพลาด: ${error.message || 'ไม่สามารถสร้างออเดอร์ได้'}`);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -98,17 +280,17 @@ export default function OrderPage() {
               <h3>เลือกแบบเสื้อ</h3>
               <div className={styles.shirtTypeSelection}>
                 <div 
-                  className={`${styles.typeOption} ${selectedShirtType === 'แบบดี' ? styles.selected : ''}`}
-                  onClick={() => setSelectedShirtType('แบบดี')}
+                  className={`${styles.typeOption} ${selectedShirtType === 'แบบสีปกติ' ? styles.selected : ''}`}
+                  onClick={() => setSelectedShirtType('แบบสีปกติ')}
                 >
-                  <div className={styles.typeLabel}>แบบดี</div>
+                  <div className={styles.typeLabel}>แบบสีปกติ</div>
                   <div className={styles.typePrice}>198 บาท</div>
                 </div>
                 <div 
-                  className={`${styles.typeOption} ${selectedShirtType === 'แบบโปโล' ? styles.selected : ''}`}
-                  onClick={() => setSelectedShirtType('แบบโปโล')}
+                  className={`${styles.typeOption} ${selectedShirtType === 'แบบไว้ทุกข์' ? styles.selected : ''}`}
+                  onClick={() => setSelectedShirtType('แบบไว้ทุกข์')}
                 >
-                  <div className={styles.typeLabel}>แบบโปโล</div>
+                  <div className={styles.typeLabel}>แบบไว้ทุกข์</div>
                   <div className={styles.typePrice}>198 บาท</div>
                 </div>
               </div>
@@ -278,10 +460,112 @@ export default function OrderPage() {
                   ← กลับไปเลือกแบบเสื้อ
                 </button>
                 <button type="submit" className={styles.btnPrimary} disabled={totalQuantity === 0}>
-                  ยืนยันสั่งซื้อ →
+                  ดำเนินการชำระเงิน →
                 </button>
               </div>
             </form>
+          </div>
+        )}
+
+        {/* Step 3: Payment */}
+        {step === 3 && (
+          <div className={styles.stepContent}>
+            <h2>💳 ชำระเงิน</h2>
+
+            {/* Payment Summary */}
+            <div className={styles.orderSummary}>
+              <h3>สรุปค่าใช้จ่าย</h3>
+              <div className={styles.summaryRow}>
+                <span>จำนวนทั้งหมด:</span>
+                <span>{totalQuantity} ตัว</span>
+              </div>
+              <div className={styles.summaryRow}>
+                <span>ราคาเสื้อ:</span>
+                <span>฿{totalPrice}</span>
+              </div>
+              <div className={styles.summaryRow}>
+                <span>ค่าจัดส่ง:</span>
+                <span>฿{shippingCost}</span>
+              </div>
+              <div className={`${styles.summaryRow} ${styles.total}`}>
+                <span>ยอดรวมที่ต้องชำระ:</span>
+                <span>฿{grandTotal}</span>
+              </div>
+            </div>
+
+            {/* Payment Method Selection */}
+            <div className={styles.formSection}>
+              <h3>เลือกวิธีชำระเงิน</h3>
+              <div className={styles.paymentMethods}>
+                {/* PromptPay */}
+                <div 
+                  className={`${styles.paymentOption} ${paymentMethod === 'promptpay' ? styles.selected : ''}`}
+                  onClick={() => setPaymentMethod('promptpay')}
+                >
+                  <div className={styles.paymentIcon}>📱</div>
+                  <div className={styles.paymentInfo}>
+                    <h4>PromptPay</h4>
+                    <p>สแกน QR Code เพื่อชำระเงิน</p>
+                  </div>
+                </div>
+
+                {/* Bank Transfer */}
+                <div 
+                  className={`${styles.paymentOption} ${paymentMethod === 'bank' ? styles.selected : ''}`}
+                  onClick={() => setPaymentMethod('bank')}
+                >
+                  <div className={styles.paymentIcon}>🏦</div>
+                  <div className={styles.paymentInfo}>
+                    <h4>โอนเงินผ่านธนาคาร</h4>
+                    <p>โอนเข้าบัญชีธนาคาร</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Payment Details */}
+            {paymentMethod === 'promptpay' && (
+              <div className={styles.paymentDetails}>
+                <h3>📱 PromptPay QR Code</h3>
+                <div className={styles.qrCodeContainer}>
+                  <div className={styles.qrPlaceholder}>
+                    <div className={styles.qrCode}>QR CODE</div>
+                    <p>สแกน QR Code เพื่อชำระเงิน</p>
+                  </div>
+                  <div className={styles.paymentInfoText}>
+                    <p><strong>ชื่อบัญชี:</strong> มูลนิธิส่งเสริมการกุศล</p>
+                    <p><strong>จำนวนเงิน:</strong> ฿{grandTotal}</p>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {paymentMethod === 'bank' && (
+              <div className={styles.paymentDetails}>
+                <h3>🏦 โอนเงินผ่านธนาคาร</h3>
+                <div className={styles.bankInfo}>
+                  <p><strong>ธนาคาร:</strong> ธนาคารกรุงไทย</p>
+                  <p><strong>เลขที่บัญชี:</strong> 123-4-56789-0</p>
+                  <p><strong>ชื่อบัญชี:</strong> มูลนิธิส่งเสริมการกุศล</p>
+                  <p><strong>จำนวนเงิน:</strong> ฿{grandTotal}</p>
+                </div>
+              </div>
+            )}
+
+            {/* Action Buttons */}
+            <div className={styles.formActions}>
+              <button type="button" className={styles.btnSecondary} onClick={() => setStep(2)}>
+                ← กลับไปแก้ไขข้อมูล
+              </button>
+              <button 
+                type="button" 
+                className={styles.btnPrimary}
+                onClick={handlePaymentConfirm}
+                disabled={!paymentMethod}
+              >
+                ยืนยันการสั่งซื้อ →
+              </button>
+            </div>
           </div>
         )}
       </div>
@@ -372,18 +656,16 @@ export default function OrderPage() {
               <button
                 onClick={() => setShowConfirmModal(false)}
                 className={styles.modalBtnCancel}
+                disabled={isSubmitting}
               >
                 ยกเลิก
               </button>
               <button
-                onClick={() => {
-                  // TODO: Process payment
-                  alert('ดำเนินการสั่งซื้อสำเร็จ!');
-                  setShowConfirmModal(false);
-                }}
+                onClick={confirmOrder}
                 className={styles.modalBtnConfirm}
+                disabled={isSubmitting}
               >
-                ยืนยันสั่งซื้อ
+                {isSubmitting ? 'กำลังดำเนินการ...' : 'ยืนยันสั่งซื้อ'}
               </button>
             </div>
           </div>
