@@ -1,14 +1,70 @@
 'use client';
 
 import Link from 'next/link';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 
-interface UserDropdownProps {
-  userName?: string;
+interface UserData {
+  id: number;
+  email: string;
+  name: string;
+  firstName?: string;
+  lastName?: string;
+  phone?: string;
 }
 
-export default function UserDropdown({ userName = "ชื่อผู้ใช้" }: UserDropdownProps) {
+export default function UserDropdown() {
+  const router = useRouter();
   const [showDropdown, setShowDropdown] = useState(false);
+  const [user, setUser] = useState<UserData | null>(null);
+
+  useEffect(() => {
+    // อ่านข้อมูล user จาก localStorage
+    const userStr = localStorage.getItem('user');
+    if (userStr) {
+      try {
+        const userData = JSON.parse(userStr);
+        setUser(userData);
+      } catch (error) {
+        console.error('Error parsing user data:', error);
+      }
+    }
+  }, []);
+
+  const handleLogout = () => {
+    // ลบข้อมูลทั้งหมดออกจาก localStorage
+    localStorage.removeItem('user');
+    localStorage.removeItem('token');
+    
+    // ปิด dropdown
+    setShowDropdown(false);
+    
+    // Redirect ไปหน้า login
+    router.push('/login');
+  };
+
+  // ถ้ายังไม่ได้ login ให้แสดงปุ่ม login
+  if (!user) {
+    return (
+      <Link href="/login">
+        <button style={{
+          padding: '0.5rem 1.5rem',
+          backgroundColor: '#6F42C1',
+          color: 'white',
+          border: 'none',
+          borderRadius: '0.5rem',
+          cursor: 'pointer',
+          fontSize: '0.875rem',
+          fontWeight: '600',
+          transition: 'all 0.3s'
+        }}>
+          เข้าสู่ระบบ
+        </button>
+      </Link>
+    );
+  }
+
+  const displayName = user.name || `${user.firstName || ''} ${user.lastName || ''}`.trim() || 'ผู้ใช้งาน';
 
   return (
     <>
@@ -50,9 +106,9 @@ export default function UserDropdown({ userName = "ชื่อผู้ใช�
             fontWeight: 'bold',
             fontSize: '0.875rem'
           }}>
-            {userName.charAt(0)}
+            {displayName.charAt(0).toUpperCase()}
           </div>
-          <span>{userName}</span>
+          <span>{displayName}</span>
           <span style={{ fontSize: '0.75rem' }}>▼</span>
         </button>
 
@@ -93,14 +149,14 @@ export default function UserDropdown({ userName = "ชื่อผู้ใช�
                   fontWeight: 'bold',
                   fontSize: '1.125rem'
                 }}>
-                  {userName.charAt(0)}
+                  {displayName.charAt(0).toUpperCase()}
                 </div>
                 <div>
                   <p style={{ margin: 0, fontWeight: '600', color: '#212529', fontSize: '0.875rem' }}>
-                    {userName}
+                    {displayName}
                   </p>
                   <p style={{ margin: 0, color: '#6B7280', fontSize: '0.75rem' }}>
-                    ผู้ใช้งาน
+                    {user.email}
                   </p>
                 </div>
               </div>
@@ -156,8 +212,10 @@ export default function UserDropdown({ userName = "ชื่อผู้ใช�
             </Link>
 
             <div style={{ borderTop: '1px solid #E5E7EB' }}>
-              <Link href="/login" style={{ textDecoration: 'none' }}>
-                <div className="dropdown-item" style={{
+              <div 
+                className="dropdown-item" 
+                onClick={handleLogout}
+                style={{
                   padding: '0.875rem 1rem',
                   display: 'flex',
                   alignItems: 'center',
@@ -167,11 +225,11 @@ export default function UserDropdown({ userName = "ชื่อผู้ใช�
                   fontSize: '0.875rem',
                   fontWeight: '500',
                   transition: 'background-color 0.2s'
-                }}>
-                  <span style={{ fontSize: '1.25rem' }}>🚪</span>
-                  <span>ออกจากระบบ</span>
-                </div>
-              </Link>
+                }}
+              >
+                <span style={{ fontSize: '1.25rem' }}>🚪</span>
+                <span>ออกจากระบบ</span>
+              </div>
             </div>
           </div>
         )}

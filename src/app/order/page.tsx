@@ -2,12 +2,10 @@
 
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { useSession } from 'next-auth/react';
 import UserDropdown from '@/components/UserDropdown';
 import styles from './order.module.css';
 import { createOrder, getShippingSettings } from '@/lib/api/backend';
 import { getAllProducts } from '@/lib/api/products';
-import { syncGoogleUser } from '@/lib/api/users';
 import type { CreateOrderRequest } from '@/types/order';
 
 interface SizeQuantity {
@@ -16,12 +14,12 @@ interface SizeQuantity {
 }
 
 export default function OrderPage() {
-  const { data: session } = useSession();
   const [step, setStep] = useState(1);
   const [selectedShirtType, setSelectedShirtType] = useState<'แบบสีปกติ' | 'แบบไว้ทุกข์' | null>(null);
   const [sizes, setSizes] = useState<SizeQuantity[]>([]);
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [paymentMethod, setPaymentMethod] = useState<'promptpay' | 'bank' | null>(null);
   const [productData, setProductData] = useState<any>(null);
   const [shippingConfig, setShippingConfig] = useState<any>(null);
 
@@ -90,23 +88,35 @@ export default function OrderPage() {
     */
   }, []);
 
-  // Sync Google user when logged in (disabled for now)
+  // Load user data from localStorage
   useEffect(() => {
-    // Uncomment when backend is ready
-    /*
-    if (session?.user) {
-      syncGoogleUser({
-        googleId: session.user.id || '',
-        email: session.user.email || '',
-        name: session.user.name || '',
-        picture: session.user.image || ''
-      }).catch(err => console.error('Error syncing user:', err));
+    const userStr = localStorage.getItem('user');
+    if (userStr) {
+      try {
+        const userData = JSON.parse(userStr);
+        setFormData(prev => ({
+          ...prev,
+          firstName: userData.firstName || '',
+          lastName: userData.lastName || '',
+          email: userData.email || '',
+          phone: userData.phone || ''
+        }));
+      } catch (error) {
+        console.error('Error loading user data:', error);
+      }
     }
-    */
-  }, [session]);
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setStep(3); // ไปหน้าเลือกวิธีชำระเงิน
+  };
+
+  const handlePaymentConfirm = () => {
+    if (!paymentMethod) {
+      alert('⚠️ กรุณาเลือกวิธีการชำระเงิน');
+      return;
+    }
     setShowConfirmModal(true);
   };
 
@@ -119,7 +129,6 @@ export default function OrderPage() {
           name: `${formData.firstName} ${formData.lastName}`,
           phone: formData.phone,
           email: formData.email || undefined,
-          googleId: session?.user?.id,
           address: {
             fullAddress: formData.address
           }
@@ -145,7 +154,7 @@ export default function OrderPage() {
           totalItems: totalQuantity
         },
         payment: {
-          method: 'promptpay',
+          method: paymentMethod === 'bank' ? 'bank_transfer' : 'promptpay',
           status: 'pending'
         },
         notes: formData.notes
@@ -161,6 +170,7 @@ export default function OrderPage() {
         setStep(1);
         setSelectedShirtType(null);
         setSizes([]);
+        setPaymentMethod(null);
         setFormData({
           firstName: '',
           lastName: '',
