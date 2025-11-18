@@ -1,9 +1,18 @@
 'use client';
 
 import Link from 'next/link';
+import { useState, useEffect } from 'react';
 import UserDropdown from '@/components/UserDropdown';
 
 export default function ProductsPage() {
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+  useEffect(() => {
+    // ตรวจสอบว่า user login หรือยัง
+    const user = localStorage.getItem('user');
+    setIsLoggedIn(!!user);
+  }, []);
+
   return (
     <>
       <style>{`
@@ -69,8 +78,8 @@ export default function ProductsPage() {
             </h2>
           </div>
           
-          {/* User Dropdown */}
-          <UserDropdown />
+          {/* User Dropdown - แสดงเฉพาะเมื่อ login แล้ว */}
+          {isLoggedIn && <UserDropdown />}
         </header>
 
         {/* Main Content */}
@@ -149,14 +158,14 @@ export default function ProductsPage() {
             </div>
           </section>
 
-          {/* Order Button */}
+          {/* Order Button / Login Button */}
           <section style={{ 
             display: 'flex', 
             justifyContent: 'center',
             marginBottom: '4rem',
             padding: '0 1rem'
           }}>
-            <Link href="/order" style={{ textDecoration: 'none', width: '100%', maxWidth: '480px' }}>
+            <Link href={isLoggedIn ? "/order" : "/login"} style={{ textDecoration: 'none', width: '100%', maxWidth: '480px' }}>
               <button className="hover-btn" style={{
                 width: '100%',
                 backgroundColor: '#6F42C1',
@@ -169,7 +178,7 @@ export default function ProductsPage() {
                 cursor: 'pointer',
                 boxShadow: '0 10px 30px rgba(111, 66, 193, 0.3)',
               }}>
-                สั่งซื้อเสื้อ
+                {isLoggedIn ? 'สั่งซื้อเสื้อ' : 'เข้าสู่ระบบ'}
               </button>
             </Link>
           </section>
