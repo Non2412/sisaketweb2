@@ -39,6 +39,8 @@ export default function LoginPage() {
         // บันทึก user data ลง localStorage
         localStorage.setItem('user', JSON.stringify(data.data.user));
         localStorage.setItem('token', data.data.token || data.token);
+        // ลบ isAdmin flag เพราะ user ธรรมดาไม่ใช่ admin
+        localStorage.removeItem('isAdmin');
         
         alert('✅ เข้าสู่ระบบสำเร็จ!');
         router.push('/products');
@@ -126,6 +128,15 @@ export default function LoginPage() {
         <div className={styles.footer}>
           <p>
             ยังไม่มีบัญชี ? <Link href="/register">ลงทะเบียน</Link>
+          </p>
+          <p style={{ marginTop: '0.5rem' }}>
+            <Link href="/login-admin" style={{ 
+              color: '#DC2626', 
+              textDecoration: 'none',
+              fontSize: '0.875rem'
+            }}>
+              🔐 เข้าสู่ระบบแอดมิน
+            </Link>
           </p>
         </div>
       </div>

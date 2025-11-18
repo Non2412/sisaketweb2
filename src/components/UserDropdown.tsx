@@ -17,6 +17,7 @@ export default function UserDropdown() {
   const router = useRouter();
   const [showDropdown, setShowDropdown] = useState(false);
   const [user, setUser] = useState<UserData | null>(null);
+  const [isAdmin, setIsAdmin] = useState(false);
 
   useEffect(() => {
     // อ่านข้อมูล user จาก localStorage
@@ -25,6 +26,10 @@ export default function UserDropdown() {
       try {
         const userData = JSON.parse(userStr);
         setUser(userData);
+        
+        // ตรวจสอบว่าเป็น admin หรือไม่
+        const adminFlag = localStorage.getItem('isAdmin');
+        setIsAdmin(adminFlag === 'true' || userData.role === 'admin');
       } catch (error) {
         console.error('Error parsing user data:', error);
       }
@@ -33,8 +38,23 @@ export default function UserDropdown() {
 
   const handleLogout = () => {
     // ลบข้อมูลทั้งหมดออกจาก localStorage
+    const userStr = localStorage.getItem('user');
+    if (userStr) {
+      try {
+        const userData = JSON.parse(userStr);
+        const userId = userData.id || userData.email;
+        // ลบออเดอร์ของ user นี้
+        localStorage.removeItem(`orders_${userId}`);
+      } catch (e) {
+        console.log('Error cleaning up orders');
+      }
+    }
+    
     localStorage.removeItem('user');
     localStorage.removeItem('token');
+    localStorage.removeItem('isAdmin'); // ลบ flag admin
+    // ลบ orders แบบเก่าด้วย (ถ้ามี)
+    localStorage.removeItem('orders');
     
     // ปิด dropdown
     setShowDropdown(false);
@@ -210,6 +230,28 @@ export default function UserDropdown() {
                 <span>ประวัติการสั่งซื้อ</span>
               </div>
             </Link>
+
+            {/* Admin Menu - แสดงเฉพาะ admin เท่านั้น */}
+            {isAdmin && (
+              <Link href="/admin" style={{ textDecoration: 'none' }}>
+                <div className="dropdown-item" style={{
+                  padding: '0.875rem 1rem',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '0.75rem',
+                  cursor: 'pointer',
+                  color: '#DC2626',
+                  fontSize: '0.875rem',
+                  fontWeight: '600',
+                  transition: 'background-color 0.2s',
+                  borderTop: '1px solid #FEE2E2',
+                  backgroundColor: '#FEF2F2'
+                }}>
+                  <span style={{ fontSize: '1.25rem' }}>🔐</span>
+                  <span>Admin Dashboard</span>
+                </div>
+              </Link>
+            )}
 
             <div style={{ borderTop: '1px solid #E5E7EB' }}>
               <div 

@@ -6,11 +6,18 @@ import UserDropdown from '@/components/UserDropdown';
 
 export default function ProductsPage() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [normalShirtCount, setNormalShirtCount] = useState(1258);
+  const [mourningShirtCount, setMourningShirtCount] = useState(973);
 
   useEffect(() => {
     // ตรวจสอบว่า user login หรือยัง
     const user = localStorage.getItem('user');
     setIsLoggedIn(!!user);
+    
+    // โหลดสถิติจาก localStorage
+    const stats = JSON.parse(localStorage.getItem('shirtStats') || '{"normal": 1258, "mourning": 973}');
+    setNormalShirtCount(stats.normal || 1258);
+    setMourningShirtCount(stats.mourning || 973);
   }, []);
 
   return (
@@ -228,7 +235,7 @@ export default function ProductsPage() {
                   margin: '0.5rem 0',
                   lineHeight: '1'
                 }}>
-                  1,258
+                  {normalShirtCount.toLocaleString()}
                 </p>
                 <p style={{ fontSize: '0.875rem', color: '#9CA3AF' }}>ตัว</p>
               </div>
@@ -256,7 +263,7 @@ export default function ProductsPage() {
                   margin: '0.5rem 0',
                   lineHeight: '1'
                 }}>
-                  973
+                  {mourningShirtCount.toLocaleString()}
                 </p>
                 <p style={{ fontSize: '0.875rem', color: '#9CA3AF' }}>ตัว</p>
               </div>

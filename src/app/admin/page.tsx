@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import styles from './admin.module.css';
 
@@ -9,26 +9,61 @@ export default function AdminDashboard() {
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [showModal, setShowModal] = useState(false);
   const [modalType, setModalType] = useState<'order' | 'payment' | null>(null);
+  const [allOrders, setAllOrders] = useState<any[]>([]);
+  const [orders, setOrders] = useState<any[]>([]);
 
-  // Mock Data - Orders
-  const [orders] = useState([
-    { id: '#CT-20240012', customer: 'สมชาย ใจดี', items: 3, total: 1500, status: 'สำเร็จ', date: '18/07/2024', payment: 'ชำระแล้ว' },
-    { id: '#CT-20240011', customer: 'สมหญิง สวยใจ', items: 1, total: 500, status: 'กำลังจัดส่ง', date: '15/07/2024', payment: 'ชำระแล้ว' },
-    { id: '#CT-20240010', customer: 'สมศักดิ์ ทำดี', items: 2, total: 1000, status: 'รอดำเนินการ', date: '12/07/2024', payment: 'รอชำระ' },
-  ]);
+  // โหลดออเดอร์จาก localStorage ของทุก user
+  useEffect(() => {
+    const loadAllOrders = () => {
+      const allUserOrders: any[] = [];
+      
+      // วนหาทุก key ที่ขึ้นต้นด้วย orders_
+      for (let i = 0; i < localStorage.length; i++) {
+        const key = localStorage.key(i);
+        if (key && key.startsWith('orders_')) {
+          try {
+            const userOrders = JSON.parse(localStorage.getItem(key) || '[]');
+            allUserOrders.push(...userOrders);
+          } catch (e) {
+            console.log('Error loading orders from', key);
+          }
+        }
+      }
+      
+      setAllOrders(allUserOrders);
+      
+      // แปลงเป็นรูปแบบที่ admin ใช้
+      const formattedOrders = allUserOrders.map(order => ({
+        id: order.id,
+        customer: order.customerName,
+        items: order.items,
+        total: typeof order.total === 'string' ? parseFloat(order.total.replace(/,/g, '')) : order.total,
+        status: order.status,
+        date: order.date,
+        payment: order.status === 'สำเร็จ' ? 'ชำระแล้ว' : 'รอชำระ'
+      }));
+      
+      setOrders(formattedOrders);
+    };
+    
+    loadAllOrders();
+  }, []);
 
-  // Mock Data - Payments
+  // Mock Data - Payments (ยังคงใช้ mock)
   const [payments] = useState([
     { id: 'PAY-001', orderId: '#CT-20240012', amount: 1500, method: 'โอนธนาคาร', date: '18/07/2024', status: 'สำเร็จ' },
     { id: 'PAY-002', orderId: '#CT-20240011', amount: 500, method: 'PromptPay', date: '15/07/2024', status: 'สำเร็จ' },
   ]);
 
-  // Stats
+  // Stats - คำนวณจากข้อมูลจริง
+  const totalOrders = orders.length;
+  const totalRevenue = orders.reduce((sum, order) => sum + order.total, 0);
+  const shippingOrders = orders.filter(order => order.status === 'กำลังจัดส่ง').length;
   const stats = [
-    { label: 'คำสั่งซื้อทั้งหมด', value: '45', icon: '🛒', color: 'blue' },
-    { label: 'รายได้ทั้งหมด', value: '฿45,500', icon: '💳', color: 'green' },
+    { label: 'คำสั่งซื้อทั้งหมด', value: totalOrders.toString(), icon: '🛒', color: 'blue' },
+    { label: 'รายได้ทั้งหมด', value: `฿${totalRevenue.toLocaleString()}`, icon: '💳', color: 'green' },
     { label: 'ผู้ใช้ทั้งหมด', value: '128', icon: '👥', color: 'purple' },
-    { label: 'ขณะนี้กำลังจัดส่ง', value: '8', icon: '📈', color: 'orange' },
+    { label: 'ขณะนี้กำลังจัดส่ง', value: shippingOrders.toString(), icon: '📈', color: 'orange' },
   ];
 
   const handleOpenModal = (type: 'order' | 'payment') => {

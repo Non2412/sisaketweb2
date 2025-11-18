@@ -10,7 +10,7 @@ export const createOrder = async (orderData: CreateOrderRequest) => {
     );
     return response;
   } catch (error) {
-    console.error('Create order error:', error);
+    // Silent error - will be handled by caller
     throw error;
   }
 };

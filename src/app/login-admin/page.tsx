@@ -35,7 +35,28 @@ export default function AdminLoginPage() {
     }
 
     try {
-      // เปลี่ยนให้เรียก API จริงของคุณ
+      // ตรวจสอบ admin hardcode ก่อน
+      if (email === 'admin@example.com' && password === 'admin123') {
+        // Admin login สำเร็จ
+        const adminData = {
+          id: 'admin001',
+          email: 'admin@example.com',
+          name: 'Admin',
+          firstName: 'Admin',
+          lastName: 'System',
+          role: 'admin'
+        };
+        
+        localStorage.setItem('user', JSON.stringify(adminData));
+        localStorage.setItem('token', 'admin-token-' + Date.now());
+        localStorage.setItem('isAdmin', 'true');
+        
+        alert('✅ เข้าสู่ระบบแอดมินสำเร็จ!');
+        window.location.href = '/admin';
+        return;
+      }
+      
+      // เรียก API ถ้าไม่ใช่ hardcode admin
       const response = await fetch('/api/auth/login', {
         method: 'POST',
         headers: {
