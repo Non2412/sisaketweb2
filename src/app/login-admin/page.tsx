@@ -1,7 +1,6 @@
 'use client';
 
 import { useState } from 'react';
-import { Lock, User, AlertCircle } from 'lucide-react';
 import styles from './login-adminhistory.module.css';
 
 export default function AdminLoginPage() {
@@ -74,7 +73,7 @@ export default function AdminLoginPage() {
           {/* Header */}
           <div className={styles.loginHeader}>
             <div className={styles.loginIconBox}>
-              <Lock size={28} />
+              <span className={styles.loginIcon} role="img" aria-label="lock">🔒</span>
             </div>
             <h1 className={styles.loginTitle}>Admin Panel</h1>
             <p className={styles.loginSubtitle}>ล็อกอินเข้าสู่ระบบผู้ดูแล</p>
@@ -83,7 +82,7 @@ export default function AdminLoginPage() {
           {/* Error Message */}
           {error && (
             <div className={styles.errorAlert}>
-              <AlertCircle size={20} />
+              <span className={styles.errorIcon} role="img" aria-label="error">⚠️</span>
               <p className={styles.errorMessage}>{error}</p>
             </div>
           )}
@@ -101,7 +100,7 @@ export default function AdminLoginPage() {
             <div className={styles.formGroup}>
               <label className={styles.formLabel}>อีเมล</label>
               <div className={styles.inputContainer}>
-                <User size={20} className={styles.inputIcon} />
+                <span className={styles.inputIcon} aria-hidden>👤</span>
                 <input
                   type="email"
                   value={email}
@@ -116,7 +115,7 @@ export default function AdminLoginPage() {
             <div className={styles.formGroup}>
               <label className={styles.formLabel}>รหัสผ่าน</label>
               <div className={styles.inputContainer}>
-                <Lock size={20} className={styles.inputIcon} />
+                <span className={styles.inputIcon} aria-hidden>🔒</span>
                 <input
                   type={showPassword ? 'text' : 'password'}
                   value={password}
