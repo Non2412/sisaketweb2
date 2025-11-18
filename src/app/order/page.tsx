@@ -12,7 +12,7 @@ interface SizeQuantity {
 
 export default function OrderPage() {
   const [step, setStep] = useState(1);
-  const [selectedShirtType, setSelectedShirtType] = useState<'แบบดี' | 'แบบโปโล' | null>(null);
+  const [selectedShirtType, setSelectedShirtType] = useState<'แบบสีปกติ' | 'แบบไว้ทุกข์' | null>(null);
   const [sizes, setSizes] = useState<SizeQuantity[]>([]);
   const [showConfirmModal, setShowConfirmModal] = useState(false);
 
@@ -98,17 +98,17 @@ export default function OrderPage() {
               <h3>เลือกแบบเสื้อ</h3>
               <div className={styles.shirtTypeSelection}>
                 <div 
-                  className={`${styles.typeOption} ${selectedShirtType === 'แบบดี' ? styles.selected : ''}`}
-                  onClick={() => setSelectedShirtType('แบบดี')}
+                  className={`${styles.typeOption} ${selectedShirtType === 'แบบสีปกติ' ? styles.selected : ''}`}
+                  onClick={() => setSelectedShirtType('แบบสีปกติ')}
                 >
-                  <div className={styles.typeLabel}>แบบดี</div>
+                  <div className={styles.typeLabel}>แบบสีปกติ</div>
                   <div className={styles.typePrice}>198 บาท</div>
                 </div>
                 <div 
-                  className={`${styles.typeOption} ${selectedShirtType === 'แบบโปโล' ? styles.selected : ''}`}
-                  onClick={() => setSelectedShirtType('แบบโปโล')}
+                  className={`${styles.typeOption} ${selectedShirtType === 'แบบไว้ทุกข์' ? styles.selected : ''}`}
+                  onClick={() => setSelectedShirtType('แบบไว้ทุกข์')}
                 >
-                  <div className={styles.typeLabel}>แบบโปโล</div>
+                  <div className={styles.typeLabel}>แบบไว้ทุกข์</div>
                   <div className={styles.typePrice}>198 บาท</div>
                 </div>
               </div>
