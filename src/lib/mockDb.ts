@@ -1,6 +1,6 @@
 // Mock Database (In-Memory) - ใช้ชั่วคราวจนกว่า Backend จะพร้อม
 // เปลี่ยนเป็น false เมื่อต้องการใช้ Backend จริง
-export const USE_MOCK = true;
+export const USE_MOCK = true; // รอเพื่อนแก้ Backend ก่อน
 
 export interface MockUser {
   id: number;
