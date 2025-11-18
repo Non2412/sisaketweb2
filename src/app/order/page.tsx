@@ -15,6 +15,7 @@ export default function OrderPage() {
   const [selectedShirtType, setSelectedShirtType] = useState<'แบบสีปกติ' | 'แบบไว้ทุกข์' | null>(null);
   const [sizes, setSizes] = useState<SizeQuantity[]>([]);
   const [showConfirmModal, setShowConfirmModal] = useState(false);
+  const [paymentMethod, setPaymentMethod] = useState<'promptpay' | 'bank' | null>(null);
 
   // Form data
   const [formData, setFormData] = useState({
@@ -53,7 +54,12 @@ export default function OrderPage() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // Show confirmation modal
+    // ไปหน้าชำระเงิน
+    setStep(3);
+  };
+
+  const handlePaymentConfirm = () => {
+    // แสดง modal ยืนยันการสั่งซื้อ
     setShowConfirmModal(true);
   };
 
@@ -278,10 +284,112 @@ export default function OrderPage() {
                   ← กลับไปเลือกแบบเสื้อ
                 </button>
                 <button type="submit" className={styles.btnPrimary} disabled={totalQuantity === 0}>
-                  ยืนยันสั่งซื้อ →
+                  ดำเนินการชำระเงิน →
                 </button>
               </div>
             </form>
+          </div>
+        )}
+
+        {/* Step 3: Payment */}
+        {step === 3 && (
+          <div className={styles.stepContent}>
+            <h2>💳 ชำระเงิน</h2>
+
+            {/* Payment Summary */}
+            <div className={styles.orderSummary}>
+              <h3>สรุปค่าใช้จ่าย</h3>
+              <div className={styles.summaryRow}>
+                <span>จำนวนทั้งหมด:</span>
+                <span>{totalQuantity} ตัว</span>
+              </div>
+              <div className={styles.summaryRow}>
+                <span>ราคาเสื้อ:</span>
+                <span>฿{totalPrice}</span>
+              </div>
+              <div className={styles.summaryRow}>
+                <span>ค่าจัดส่ง:</span>
+                <span>฿{shippingCost}</span>
+              </div>
+              <div className={`${styles.summaryRow} ${styles.total}`}>
+                <span>ยอดรวมที่ต้องชำระ:</span>
+                <span>฿{grandTotal}</span>
+              </div>
+            </div>
+
+            {/* Payment Method Selection */}
+            <div className={styles.formSection}>
+              <h3>เลือกวิธีชำระเงิน</h3>
+              <div className={styles.paymentMethods}>
+                {/* PromptPay */}
+                <div 
+                  className={`${styles.paymentOption} ${paymentMethod === 'promptpay' ? styles.selected : ''}`}
+                  onClick={() => setPaymentMethod('promptpay')}
+                >
+                  <div className={styles.paymentIcon}>📱</div>
+                  <div className={styles.paymentInfo}>
+                    <h4>PromptPay</h4>
+                    <p>สแกน QR Code เพื่อชำระเงิน</p>
+                  </div>
+                </div>
+
+                {/* Bank Transfer */}
+                <div 
+                  className={`${styles.paymentOption} ${paymentMethod === 'bank' ? styles.selected : ''}`}
+                  onClick={() => setPaymentMethod('bank')}
+                >
+                  <div className={styles.paymentIcon}>🏦</div>
+                  <div className={styles.paymentInfo}>
+                    <h4>โอนเงินผ่านธนาคาร</h4>
+                    <p>โอนเข้าบัญชีธนาคาร</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Payment Details */}
+            {paymentMethod === 'promptpay' && (
+              <div className={styles.paymentDetails}>
+                <h3>📱 PromptPay QR Code</h3>
+                <div className={styles.qrCodeContainer}>
+                  <div className={styles.qrPlaceholder}>
+                    <div className={styles.qrCode}>QR CODE</div>
+                    <p>สแกน QR Code เพื่อชำระเงิน</p>
+                  </div>
+                  <div className={styles.paymentInfoText}>
+                    <p><strong>ชื่อบัญชี:</strong> มูลนิธิส่งเสริมการกุศล</p>
+                    <p><strong>จำนวนเงิน:</strong> ฿{grandTotal}</p>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {paymentMethod === 'bank' && (
+              <div className={styles.paymentDetails}>
+                <h3>🏦 โอนเงินผ่านธนาคาร</h3>
+                <div className={styles.bankInfo}>
+                  <p><strong>ธนาคาร:</strong> ธนาคารกรุงไทย</p>
+                  <p><strong>เลขที่บัญชี:</strong> 123-4-56789-0</p>
+                  <p><strong>ชื่อบัญชี:</strong> มูลนิธิส่งเสริมการกุศล</p>
+                  <p><strong>จำนวนเงิน:</strong> ฿{grandTotal}</p>
+                </div>
+              </div>
+            )}
+
+            {/* Action Buttons */}
+            <div className={styles.formActions}>
+              <button type="button" className={styles.btnSecondary} onClick={() => setStep(2)}>
+                ← กลับไปแก้ไขข้อมูล
+              </button>
+              <button 
+                type="button" 
+                className={styles.btnPrimary}
+                onClick={handlePaymentConfirm}
+                disabled={!paymentMethod}
+              >
+                ยืนยันการสั่งซื้อ →
+              </button>
+            </div>
           </div>
         )}
       </div>
